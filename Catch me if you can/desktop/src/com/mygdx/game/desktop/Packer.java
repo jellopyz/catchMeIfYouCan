@@ -6,9 +6,9 @@ import com.badlogic.gdx.tools.texturepacker.TexturePacker.Settings;
 public class Packer {
 
 	public static void main(String[] args) {
-		String input = "C:\\Users\\Mickey\\Downloads\\test\\core\\assets\\input";
-		String output = "C:\\Users\\Mickey\\Downloads\\test\\core\\assets\\output";
-		String packFileName = "arrowweapon";
+		String input = "C:\\Users\\BANK\\Desktop\\oop game\\Catch me if you can\\core\\assets\\player";
+		String output = "C:\\Users\\BANK\\Desktop\\oop game\\Catch me if you can\\core\\assets\\player";
+		String packFileName = "player1";
 		Settings settings =  new TexturePacker.Settings();
 		settings.useIndexes = true;
 		TexturePacker.processIfModified(settings, input, output, packFileName);

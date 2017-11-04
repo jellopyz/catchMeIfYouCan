@@ -1,0 +1,104 @@
+
+player1.png
+size: 1024,1024
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+stand
+  rotate: false
+  xy: 2, 757
+  size: 221, 261
+  orig: 221, 261
+  offset: 0, 0
+  index: -1
+standL
+  rotate: false
+  xy: 854, 774
+  size: 158, 244
+  orig: 158, 244
+  offset: 0, 0
+  index: -1
+standR
+  rotate: false
+  xy: 413, 248
+  size: 158, 244
+  orig: 158, 244
+  offset: 0, 0
+  index: -1
+standback
+  rotate: false
+  xy: 2, 494
+  size: 221, 261
+  orig: 221, 261
+  offset: 0, 0
+  index: -1
+walk1
+  rotate: false
+  xy: 225, 757
+  size: 221, 261
+  orig: 221, 261
+  offset: 0, 0
+  index: -1
+walk2
+  rotate: false
+  xy: 2, 231
+  size: 221, 261
+  orig: 221, 261
+  offset: 0, 0
+  index: -1
+walkL1
+  rotate: false
+  xy: 225, 247
+  size: 186, 245
+  orig: 186, 245
+  offset: 0, 0
+  index: -1
+walkL2
+  rotate: false
+  xy: 573, 300
+  size: 189, 227
+  orig: 189, 227
+  offset: 0, 0
+  index: -1
+walkL3
+  rotate: false
+  xy: 2, 3
+  size: 202, 226
+  orig: 202, 226
+  offset: 0, 0
+  index: -1
+walkR1
+  rotate: false
+  xy: 671, 773
+  size: 181, 245
+  orig: 181, 245
+  offset: 0, 0
+  index: -1
+walkR2
+  rotate: false
+  xy: 206, 2
+  size: 185, 227
+  orig: 185, 227
+  offset: 0, 0
+  index: -1
+walkR3
+  rotate: false
+  xy: 448, 529
+  size: 202, 226
+  orig: 202, 226
+  offset: 0, 0
+  index: -1
+walkback1
+  rotate: false
+  xy: 225, 494
+  size: 221, 261
+  orig: 221, 261
+  offset: 0, 0
+  index: -1
+walkback2
+  rotate: false
+  xy: 448, 757
+  size: 221, 261
+  orig: 221, 261
+  offset: 0, 0
+  index: -1

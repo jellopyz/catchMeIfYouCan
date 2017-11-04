@@ -1,0 +1,27 @@
+
+playerfront.png
+size: 1024,512
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+face-1
+  rotate: false
+  xy: 2, 2
+  size: 221, 261
+  orig: 221, 261
+  offset: 0, 0
+  index: -1
+face-2
+  rotate: false
+  xy: 225, 2
+  size: 221, 261
+  orig: 221, 261
+  offset: 0, 0
+  index: -1
+face-3
+  rotate: false
+  xy: 448, 2
+  size: 221, 261
+  orig: 221, 261
+  offset: 0, 0
+  index: -1

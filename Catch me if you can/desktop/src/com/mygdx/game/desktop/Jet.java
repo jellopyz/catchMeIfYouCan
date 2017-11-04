@@ -17,8 +17,8 @@ public class Jet implements ApplicationListener {
     @Override
     public void create() {        
         batch = new SpriteBatch();
-        texture = new Texture(Gdx.files.internal("download.png"));
-        texture1 = new Texture(Gdx.files.internal("badlogic.jpg"));
+        texture = new Texture(Gdx.files.internal("0002.png"));
+        texture1 = new Texture(Gdx.files.internal("0001.jpg"));
         sprite = new Sprite(texture);
         sprite1 = new Sprite(texture1);
     }

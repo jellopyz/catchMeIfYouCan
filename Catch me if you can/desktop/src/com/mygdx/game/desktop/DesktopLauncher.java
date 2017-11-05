@@ -10,6 +10,7 @@ public class DesktopLauncher {
 		config.height = 600;
 		config.width = 800;
 		config.title = "Catch Me If You Can";
+		config.forceExit = false;
 		//config.addIcon(path, fileType);
 		new LwjglApplication(new Main(), config);
 	}

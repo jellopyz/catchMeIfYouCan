@@ -10,7 +10,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
-public class Chapter1 implements Screen{
+public class Chapter2 implements Screen{
 	final Main main;
 	
 	public SpriteBatch batch;
@@ -18,12 +18,12 @@ public class Chapter1 implements Screen{
 	public Character player1;
 	public Character player2;
 	
-	public Chapter1(Main main) {
+	public Chapter2(Main main) {
 		this.main = main;
 		
 		//Sprite, Batch, Texture, Atlas
 		batch = main.batch;
-		background = new Texture("map/map1.jpg");
+		background = new Texture("map/map2.jpg");
 		//Objects
 		player1 = new Character();
 		player2 = new Character(1280, 680);
@@ -52,12 +52,12 @@ public class Chapter1 implements Screen{
 		//----------------------------------------//
 		
 		//Change map
-		if (Gdx.input.isKeyPressed(Input.Keys.NUM_2)) {
-			main.setScreen(new Chapter2(main));
-			//dispose();
-		}
 		if (Gdx.input.isKeyPressed(Input.Keys.NUM_3)) {
 			main.setScreen(new Chapter3(main));
+			//dispose();
+		}
+		if (Gdx.input.isKeyPressed(Input.Keys.NUM_1)) {
+			main.setScreen(new Chapter1(main));
 			//dispose();
 		}
 		//Check Clipping//
@@ -158,6 +158,7 @@ public class Chapter1 implements Screen{
 		batch.draw(player2.currentFrame, player2.pos_x, player2.pos_y, player2.size_x, player2.size_y);
 		batch.end();
 		//---------------------------------------------------------------------------------//
+		
 		
 	}
 

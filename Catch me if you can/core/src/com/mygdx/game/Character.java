@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public class Character {
-	int pos_x = 0, pos_y = 0, stop = 0, size_x = 100, size_y = 100;
+	int pos_x = 0, pos_y = 0, stop = 0, size_x = 48, size_y = 48;
 	float elapsedTime = 0;
 	TextureAtlas atlas;
 	TextureRegion currentFrame;

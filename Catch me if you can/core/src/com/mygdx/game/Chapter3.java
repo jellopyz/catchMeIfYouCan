@@ -4,26 +4,41 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
+import com.badlogic.gdx.maps.tiled.TmxMapLoader;
+import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 
-public class Chapter1 implements Screen{
+public class Chapter3 implements Screen{
 	final Main main;
 	
 	public SpriteBatch batch;
 	public Texture background;
 	public Character player1;
 	public Character player2;
+	public TiledMap tiledMap;
+	public TiledMapRenderer tiledMapRenderer;
+	public OrthographicCamera camera;
 	
-	public Chapter1(Main main) {
+	public Chapter3(Main main) {
 		this.main = main;
+		float w = Gdx.graphics.getWidth();
+        float h = Gdx.graphics.getHeight();
 		
 		//Sprite, Batch, Texture, Atlas
 		batch = main.batch;
-		background = new Texture("map/map1.jpg");
+		//TiledMap
+		tiledMap = new TmxMapLoader().load("tilemap/testmap.tmx");
+		tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap);	
+		//Camera
+		camera = new OrthographicCamera();
+        camera.setToOrtho(false,w,h);
 		//Objects
 		player1 = new Character();
 		player2 = new Character(1280, 680);
@@ -43,11 +58,12 @@ public class Chapter1 implements Screen{
 		player2.go_left = new Animation(1/2f, player1.atlas.findRegion("walkL1"), player1.atlas.findRegion("walkL2"), player1.atlas.findRegion("walkL3"));
 		player2.stand = new Animation(1/2f, player1.atlas.findRegion("stand"), player1.atlas.findRegion("standback"), player1.atlas.findRegion("standR"), player1.atlas.findRegion("standL"));
 	}
-
+	
 	@Override
 	public void render(float delta) {
 		//Clear
 		Gdx.gl.glClearColor(255, 255, 255, 1);
+		Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		//----------------------------------------//
 		
@@ -56,8 +72,8 @@ public class Chapter1 implements Screen{
 			main.setScreen(new Chapter2(main));
 			//dispose();
 		}
-		if (Gdx.input.isKeyPressed(Input.Keys.NUM_3)) {
-			main.setScreen(new Chapter3(main));
+		if (Gdx.input.isKeyPressed(Input.Keys.NUM_1)) {
+			main.setScreen(new Chapter1(main));
 			//dispose();
 		}
 		//Check Clipping//
@@ -149,15 +165,16 @@ public class Chapter1 implements Screen{
 			}
 		}
 		//-----------------------------------------------------------------------------------------------------//
-		
-		
+
+        tiledMapRenderer.setView(camera);
+        tiledMapRenderer.render();
 		//Graphics Rendering//
 		batch.begin();
-		batch.draw(background, 0, 0, 1280, 680);
 		batch.draw(player1.currentFrame, player1.pos_x, player1.pos_y, player1.size_x, player1.size_y);
 		batch.draw(player2.currentFrame, player2.pos_x, player2.pos_y, player2.size_x, player2.size_y);
 		batch.end();
 		//---------------------------------------------------------------------------------//
+		
 		
 	}
 
@@ -167,6 +184,7 @@ public class Chapter1 implements Screen{
 		background.dispose();
 		player1.atlas.dispose();
 		player2.atlas.dispose();
+		tiledMap.dispose();
 		
 	}
 
@@ -199,5 +217,4 @@ public class Chapter1 implements Screen{
 		// TODO Auto-generated method stub
 		
 	}
-
 }

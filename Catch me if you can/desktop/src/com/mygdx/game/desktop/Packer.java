@@ -6,11 +6,13 @@ import com.badlogic.gdx.tools.texturepacker.TexturePacker.Settings;
 public class Packer {
 
 	public static void main(String[] args) {
-		String input = "C:\\Users\\BANK\\Desktop\\oop game\\Catch me if you can\\core\\assets\\exit";
+		String input = "C:\\Users\\BANK\\Desktop\\oop game\\Catch me if you can\\core\\assets\\title";
 		String output = "C:\\Users\\BANK\\Desktop\\oop game\\Catch me if you can\\core\\assets";
-		String packFileName = "exit";
+		String packFileName = "title";
 		Settings settings =  new TexturePacker.Settings();
 		settings.useIndexes = true;
+		settings.maxWidth = 8192;
+		settings.maxHeight = 8192;
 		TexturePacker.processIfModified(settings, input, output, packFileName);
 	}
 

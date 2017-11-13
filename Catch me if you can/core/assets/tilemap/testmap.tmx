@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" tiledversion="1.0.3" orientation="orthogonal" renderorder="right-down" width="64" height="34" tilewidth="20" tileheight="20" nextobjectid="4">
+<map version="1.0" tiledversion="1.0.3" orientation="orthogonal" renderorder="right-down" width="64" height="34" tilewidth="20" tileheight="20" nextobjectid="14">
  <tileset firstgid="1" source="1.tsx"/>
  <layer name="1" width="64" height="34">
   <data encoding="csv">
@@ -39,7 +39,18 @@
 168,169,168,169,168,169,168,169,168,169,168,169,168,169,168,169,168,169,168,169,168,169,168,169,168,169,168,169,168,169,168,169,168,169,168,169,168,169,168,169,168,169,168,169,168,169,168,169,168,169,168,169,168,169,168,169,168,169,168,169,168,169,168,169
 </data>
  </layer>
- <objectgroup name="objects"/>
+ <objectgroup name="objects">
+  <object id="4" x="400" y="39.3333" width="79.3333" height="80.6667"/>
+  <object id="5" x="680" y="130.667" width="48" height="48"/>
+  <object id="6" x="500.667" y="270.667" width="49.3333" height="49.3333"/>
+  <object id="7" x="220.667" y="290.667" width="48.6667" height="48.6667"/>
+  <object id="8" x="419.333" y="470.667" width="49.3333" height="48.6667"/>
+  <object id="9" x="680" y="350.667" width="48.6667" height="49.3333"/>
+  <object id="10" x="820.667" y="250" width="47.3333" height="48.6667"/>
+  <object id="11" x="840.667" y="510" width="48" height="50"/>
+  <object id="12" x="1039.33" y="290" width="50" height="49.3333"/>
+  <object id="13" x="1000.67" y="71.3333" width="48" height="47.3333"/>
+ </objectgroup>
  <layer name="2" width="64" height="34">
   <data encoding="csv">
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,

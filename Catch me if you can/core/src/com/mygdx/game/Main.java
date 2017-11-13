@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 public class Main extends Game{
 	
 	public SpriteBatch batch;
+	protected static final float PPM = 100f;
 	
 	public void create() {
 		//Sprite, Batch, Texture, Atlas

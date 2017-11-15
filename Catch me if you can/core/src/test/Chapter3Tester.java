@@ -25,11 +25,11 @@ import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
-import com.mygdx.game.Chapter1;
-import com.mygdx.game.Chapter2;
-import com.mygdx.game.Character;
-import com.mygdx.game.Clipping;
 import com.mygdx.game.Main;
+import com.mygdx.game.model.Character;
+import com.mygdx.game.screen.Chapter1;
+import com.mygdx.game.screen.Chapter2;
+import com.mygdx.game.tools.Clipping;
 
 public class Chapter3Tester implements Screen{
 	final Main main;
@@ -115,6 +115,7 @@ public class Chapter3Tester implements Screen{
 		atlas = new TextureAtlas(Gdx.files.internal("player/player1.atlas"));
 		//Player3
 		player3 = new Player(world, this);
+		
 	}
 	
 	public void handle(float delta) {

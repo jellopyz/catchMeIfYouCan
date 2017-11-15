@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" tiledversion="1.0.3" orientation="orthogonal" renderorder="right-down" width="64" height="34" tilewidth="20" tileheight="20" nextobjectid="39">
+<map version="1.0" tiledversion="1.0.3" orientation="orthogonal" renderorder="right-down" width="64" height="34" tilewidth="20" tileheight="20" nextobjectid="58">
  <tileset firstgid="1" source="Background.tsx"/>
  <tileset firstgid="191" source="Box.tsx"/>
  <tileset firstgid="195" source="Cactus.tsx"/>
@@ -199,17 +199,24 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
  </layer>
- <objectgroup name="Can Destoy">
-  <properties>
-   <property name="ทำลายได้" value=""/>
-  </properties>
- </objectgroup>
- <objectgroup name="ขอบนอก">
+ <objectgroup name="Box">
   <object id="21" x="-2" y="-4" width="1282" height="44"/>
   <object id="22" x="1240" y="0" width="38" height="680"/>
   <object id="23" x="0" y="640" width="1280" height="40"/>
   <object id="24" x="-2" y="-2" width="42" height="680"/>
  </objectgroup>
- <objectgroup name="กระบองเพชร"/>
- <objectgroup name="ธรรมดา"/>
+ <objectgroup name="Cactus"/>
+ <objectgroup name="Barrel">
+  <object id="46" x="299" y="78" width="241" height="18"/>
+  <object id="47" x="541" y="101" width="39" height="17"/>
+  <object id="48" x="542" y="159" width="116" height="18"/>
+  <object id="49" x="460" y="178" width="38" height="19"/>
+  <object id="50" x="261" y="160" width="38" height="17"/>
+  <object id="51" x="221" y="142" width="39" height="15"/>
+  <object id="52" x="259" y="219" width="40" height="16"/>
+  <object id="53" x="279" y="259" width="79" height="20"/>
+  <object id="54" x="359" y="240" width="38" height="16"/>
+  <object id="55" x="400" y="220" width="41" height="15"/>
+  <object id="57" x="421" y="242" width="78" height="18"/>
+ </objectgroup>
 </map>

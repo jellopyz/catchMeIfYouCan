@@ -21,7 +21,10 @@ public class Character {
 	public int score = 0;
 	public int speedup = 0;
 	public float shoedelay = 0;
+	public float bananadelay = 0;
 	public String holding = "";
+	public boolean stuck = false;
+	public boolean win = false;
 	
 	public Character() {
 		

@@ -20,15 +20,18 @@ public class Character {
 	public String prevkey;
 	public boolean checkoverlaps=false, checkbehind=false, 
 					checkshoe=false, checkcactus=false, checkbreakboxwalk=false, checkice=false;
+	public boolean checkcan = false, checkbone = false;
 	public int score = 0;
 	public int speedup = 0;
 	public float shoedelay = 0;
 	public float bananadelay = 0;
+	public float candelay = 0;
+	public float bonedelay = 0;
 	public float cactusdelay = 0;
 	public float unjidelay = 0;
 	public String holding = "";
-	public boolean stuck = false;
-	public boolean slow = false;
+	public boolean stuck = false, canstuck=false;
+	public boolean slow = false, boneslow=false;
 	public boolean speed = false;
 	public boolean win = false;
 	

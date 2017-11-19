@@ -27,6 +27,8 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.game.Hud;
 import com.mygdx.game.Main;
 import com.mygdx.game.item.Banana;
+import com.mygdx.game.item.Bone;
+import com.mygdx.game.item.Can;
 import com.mygdx.game.item.Pickaxe;
 import com.mygdx.game.item.Shoes;
 import com.mygdx.game.item.Unji;
@@ -65,6 +67,8 @@ public class Chapter2 implements Screen{
 	public Banana banana;
 	public Unji unji;
 	public Pickaxe pickaxe;
+	public Can can;
+	public Bone bone;
 	//ViewPort, HUD
 	public Viewport gamePort;
 	public Hud hud;
@@ -168,7 +172,9 @@ public class Chapter2 implements Screen{
 		shoes = new Shoes(500, 40);
 		banana = new Banana(500, 540);
 		unji = new Unji(300, 350);
-		pickaxe = new Pickaxe(550, 500);
+		pickaxe = new Pickaxe(550, 550);
+		can = new Can(600, 50);
+		bone = new Bone(900, 70);
 		
 		//HUD
         hud = new Hud(batch, player1.score, player2.score);
@@ -220,49 +226,49 @@ public class Chapter2 implements Screen{
         
         
         //BreakBox
-        for (MapObject object : tiledMap.getLayers().get("grassbroken1").getObjects().getByType(RectangleMapObject.class)) {
+        for (MapObject object : tiledMap.getLayers().get("ograssbroken1").getObjects().getByType(RectangleMapObject.class)) {
         	Rectangle rect = ((RectangleMapObject) object).getRectangle();
         	breakbox.add(rect);
 			++breakboxcount;
 			break;
 		}
-        for (MapObject object : tiledMap.getLayers().get("grassbroken2").getObjects().getByType(RectangleMapObject.class)) {
+        for (MapObject object : tiledMap.getLayers().get("ograssbroken2").getObjects().getByType(RectangleMapObject.class)) {
         	Rectangle rect = ((RectangleMapObject) object).getRectangle();
         	breakbox.add(rect);
 			++breakboxcount;
 			break;
 		}
-        for (MapObject object : tiledMap.getLayers().get("grassbroken3").getObjects().getByType(RectangleMapObject.class)) {
+        for (MapObject object : tiledMap.getLayers().get("ograssbroken3").getObjects().getByType(RectangleMapObject.class)) {
         	Rectangle rect = ((RectangleMapObject) object).getRectangle();
         	breakbox.add(rect);
 			++breakboxcount;
 			break;
 		}
-        for (MapObject object : tiledMap.getLayers().get("grassbroken4").getObjects().getByType(RectangleMapObject.class)) {
+        for (MapObject object : tiledMap.getLayers().get("ograssbroken4").getObjects().getByType(RectangleMapObject.class)) {
         	Rectangle rect = ((RectangleMapObject) object).getRectangle();
         	breakbox.add(rect);
 			++breakboxcount;
 			break;
 		}
-        for (MapObject object : tiledMap.getLayers().get("grassbroken5").getObjects().getByType(RectangleMapObject.class)) {
+        for (MapObject object : tiledMap.getLayers().get("ograssbroken5").getObjects().getByType(RectangleMapObject.class)) {
         	Rectangle rect = ((RectangleMapObject) object).getRectangle();
         	breakbox.add(rect);
 			++breakboxcount;
 			break;
 		}
-        for (MapObject object : tiledMap.getLayers().get("grassbroken6").getObjects().getByType(RectangleMapObject.class)) {
+        for (MapObject object : tiledMap.getLayers().get("ograssbroken6").getObjects().getByType(RectangleMapObject.class)) {
         	Rectangle rect = ((RectangleMapObject) object).getRectangle();
         	breakbox.add(rect);
 			++breakboxcount;
 			break;
 		}
-        for (MapObject object : tiledMap.getLayers().get("grassbroken7").getObjects().getByType(RectangleMapObject.class)) {
+        for (MapObject object : tiledMap.getLayers().get("ograssbroken7").getObjects().getByType(RectangleMapObject.class)) {
         	Rectangle rect = ((RectangleMapObject) object).getRectangle();
         	breakbox.add(rect);
 			++breakboxcount;
 			break;
 		}
-        for (MapObject object : tiledMap.getLayers().get("grassbroken8").getObjects().getByType(RectangleMapObject.class)) {
+        for (MapObject object : tiledMap.getLayers().get("ograssbroken8").getObjects().getByType(RectangleMapObject.class)) {
         	Rectangle rect = ((RectangleMapObject) object).getRectangle();
         	breakbox.add(rect);
 			++breakboxcount;
@@ -492,8 +498,449 @@ public class Chapter2 implements Screen{
 		player2.stand = new Animation(1/2f, player2.atlas.findRegion("bfd"), player2.atlas.findRegion("bbu"), player2.atlas.findRegion("blr"), player2.atlas.findRegion("bfr"));
 		player2.confused = new Animation(1/2f, player2.atlas.findRegion("bc1"), player2.atlas.findRegion("bc2"), player2.atlas.findRegion("bc3"));
 		
+		//can
+		can.atlas = new TextureAtlas(Gdx.files.internal("item/can/Can Action/canact.atlas"));
+		can.anime = new Animation(1/5f, can.atlas.findRegion("1"), can.atlas.findRegion("2"),can.atlas.findRegion("3")
+				,can.atlas.findRegion("4"),can.atlas.findRegion("5"),can.atlas.findRegion("6"),can.atlas.findRegion("7")
+				,can.atlas.findRegion("8"));
+				
+		//bone
+		bone.atlas = new TextureAtlas(Gdx.files.internal("item/bone/Bone Action/boneact.atlas"));
+		bone.anime = new Animation(1/5f, bone.atlas.findRegion("1"), bone.atlas.findRegion("2"),bone.atlas.findRegion("3")
+				,bone.atlas.findRegion("4"),bone.atlas.findRegion("5"),bone.atlas.findRegion("6"),bone.atlas.findRegion("7"));
+				
 	}
 
+	
+	public void check_bone(float delta) {
+		//Can overlaps and Holding
+		if (player1.rect.overlaps(bone.rect) && bone.slow == false) {
+			player1.holding = "Bone";
+			bone.pickup = true;
+			bone.slow = true;
+			bone.rect.x += 100000;
+		}
+		if (player2.rect.overlaps(bone.rect) && bone.slow == false) {
+			player2.holding = "Bone";
+			bone.pickup = true;
+			bone.slow = true;
+			bone.rect.x += 100000;
+		}
+		// When touch bone
+		if (player1.rect.overlaps(bone.rect) && bone.slow == true) {
+			bone.rect.x += 100000;
+			player1.boneslow= true;
+			player1.bonedelay = TimeUtils.nanoTime();
+		}
+		if (player2.rect.overlaps(bone.rect) && bone.slow == true) {
+			bone.rect.x += 100000;
+			player2.boneslow = true;
+			player2.bonedelay = TimeUtils.nanoTime();
+		}
+		
+		//Slow
+		if (player1.boneslow == true) {
+			if (TimeUtils.nanoTime()- player1.bonedelay < 3000000000f) {
+				player1.elapsedTime += 0.7*delta;
+				player1.speedup = -3;
+				player1.boneslow = true;
+			}
+			else {
+				player1.bonedelay = 0;
+				player1.boneslow = false;
+				player1.speedup = 0;
+			}
+		}
+		if (player2.boneslow == true) {
+			if (TimeUtils.nanoTime()- player2.bonedelay < 3000000000f) {
+				player2.elapsedTime += 0.7*delta;
+				player2.boneslow = true;
+				player2.speedup = -3;
+			}
+			else {
+				player2.bonedelay = 0;
+				player2.boneslow = false;
+				player2.speedup = 0;
+			}
+		}
+		
+		//Player1 throw
+		if (player1.holding == "Bone") {
+			if (Gdx.input.isKeyPressed(Input.Keys.SPACE) && player1.prevkey == "UP"){
+				bone.rect.x = player1.topbox.x;
+				bone.rect.y = player1.topbox.y;
+				player1.holding = "";
+				bone.throwup = true;
+			}
+			else if (Gdx.input.isKeyPressed(Input.Keys.SPACE) && player1.prevkey == "DOWN"){
+				bone.rect.x = player1.downbox.x;
+				bone.rect.y = player1.downbox.y;
+				player1.holding = "";
+				bone.throwdown = true;
+			}
+			else if (Gdx.input.isKeyPressed(Input.Keys.SPACE) && player1.prevkey == "RIGHT"){
+				bone.rect.x = player1.rightbox.x;
+				bone.rect.y = player1.rightbox.y;
+				player1.holding = "";
+				bone.throwright = true;
+			}
+			else if (Gdx.input.isKeyPressed(Input.Keys.SPACE) && player1.prevkey == "LEFT"){
+				bone.rect.x = player1.leftbox.x;
+				bone.rect.y = player1.leftbox.y;
+				player1.holding = "";
+				bone.throwleft = true;
+			}
+		}
+		
+		//Player2 throw
+		if (player2.holding == "Bone") {
+			if (Gdx.input.isKeyPressed(Input.Keys.NUMPAD_0) && player2.prevkey == "UP"){
+				bone.rect.x = player2.topbox.x;
+				bone.rect.y = player2.topbox.y;
+				player2.holding = "";
+				bone.throwup = true;
+			}
+			else if (Gdx.input.isKeyPressed(Input.Keys.NUMPAD_0) && player2.prevkey == "DOWN"){
+				bone.rect.x = player2.downbox.x;
+				bone.rect.y = player2.downbox.y;
+				player2.holding = "";
+				bone.throwdown = true;
+			}
+			else if (Gdx.input.isKeyPressed(Input.Keys.NUMPAD_0) && player2.prevkey == "RIGHT"){
+				bone.rect.x = player2.rightbox.x;
+				bone.rect.y = player2.rightbox.y;
+				player2.holding = "";
+				bone.throwright = true;
+			}
+			else if (Gdx.input.isKeyPressed(Input.Keys.NUMPAD_0) && player2.prevkey == "LEFT"){
+				bone.rect.x = player2.leftbox.x;
+				bone.rect.y = player2.leftbox.y;
+				player2.holding = "";
+				bone.throwleft = true;
+			}
+		}
+		
+}
+	
+	public void check_can(float delta) {
+		//Can overlaps and Holding
+		if (player1.rect.overlaps(can.rect) && can.stunt == false) {
+			player1.holding = "Can";
+			can.pickup = true;
+			can.stunt = true;
+			can.rect.x += 100000;
+		}
+		if (player2.rect.overlaps(can.rect) && can.stunt == false) {
+			player2.holding = "Can";
+			can.pickup = true;
+			can.stunt = true;
+			can.rect.x += 100000;
+		}
+		// When touch can
+		if (player1.rect.overlaps(can.rect) && can.stunt == true) {
+			can.rect.x += 100000;
+			player1.canstuck = true;
+			player1.candelay = TimeUtils.nanoTime();
+		}
+		if (player2.rect.overlaps(can.rect) && can.stunt == true) {
+			can.rect.x += 100000;
+			player2.canstuck = true;
+			player2.candelay = TimeUtils.nanoTime();
+		}
+		
+		//Stunt
+		if (player1.canstuck == true) {
+			if (TimeUtils.nanoTime()- player1.candelay < 3000000000f) {
+				player1.currentFrame = (TextureRegion) player1.confused.getKeyFrame(player1.elapsedTime, true);
+				player1.elapsedTime += 2*delta;
+				player1.canstuck = true;
+			}
+			else {
+				player1.candelay = 0;
+				player1.canstuck = false;
+			}
+		}
+		if (player2.canstuck == true) {
+			if (TimeUtils.nanoTime()- player2.candelay < 3000000000f) {
+				player2.currentFrame = (TextureRegion) player2.confused.getKeyFrame(player2.elapsedTime, true);
+				player2.elapsedTime += 2*delta;
+				player2.canstuck = true;
+			}
+			else {
+				player2.candelay = 0;
+				player2.canstuck = false;
+			}
+		}
+		
+		//Player1 throw
+		if (player1.holding == "Can") {
+			if (Gdx.input.isKeyPressed(Input.Keys.SPACE) && player1.prevkey == "UP"){
+				can.rect.x = player1.topbox.x;
+				can.rect.y = player1.topbox.y;
+				player1.holding = "";
+				can.throwup = true;
+			}
+			else if (Gdx.input.isKeyPressed(Input.Keys.SPACE) && player1.prevkey == "DOWN"){
+				can.rect.x = player1.downbox.x;
+				can.rect.y = player1.downbox.y;
+				player1.holding = "";
+				can.throwdown = true;
+			}
+			else if (Gdx.input.isKeyPressed(Input.Keys.SPACE) && player1.prevkey == "RIGHT"){
+				can.rect.x = player1.rightbox.x;
+				can.rect.y = player1.rightbox.y;
+				player1.holding = "";
+				can.throwright = true;
+			}
+			else if (Gdx.input.isKeyPressed(Input.Keys.SPACE) && player1.prevkey == "LEFT"){
+				can.rect.x = player1.leftbox.x;
+				can.rect.y = player1.leftbox.y;
+				player1.holding = "";
+				can.throwleft = true;
+			}
+		}
+		
+		//Player2 throw
+		if (player2.holding == "Can") {
+			if (Gdx.input.isKeyPressed(Input.Keys.NUMPAD_0) && player2.prevkey == "UP"){
+				can.rect.x = player2.topbox.x;
+				can.rect.y = player2.topbox.y;
+				player2.holding = "";
+				can.throwup = true;
+			}
+			else if (Gdx.input.isKeyPressed(Input.Keys.NUMPAD_0) && player2.prevkey == "DOWN"){
+				can.rect.x = player2.downbox.x;
+				can.rect.y = player2.downbox.y;
+				player2.holding = "";
+				can.throwdown = true;
+			}
+			else if (Gdx.input.isKeyPressed(Input.Keys.NUMPAD_0) && player2.prevkey == "RIGHT"){
+				can.rect.x = player2.rightbox.x;
+				can.rect.y = player2.rightbox.y;
+				player2.holding = "";
+				can.throwright = true;
+			}
+			else if (Gdx.input.isKeyPressed(Input.Keys.NUMPAD_0) && player2.prevkey == "LEFT"){
+				can.rect.x = player2.leftbox.x;
+				can.rect.y = player2.leftbox.y;
+				player2.holding = "";
+				can.throwleft = true;
+			}
+		}
+		
+		
+	}
+	
+	public void check_pickaxe(float delta) {
+		//pickaxe overlaps
+		if (player1.rect.overlaps(pickaxe.rect)) {
+			pickaxe.rect.x += 100000;
+			player1.holding = "Pickaxe";
+					
+		}
+		if (player2.rect.overlaps(pickaxe.rect)) {
+			pickaxe.rect.x += 100000;
+			player2.holding = "Pickaxe";
+		}
+		
+		//player1 destroy
+		for (int i=0 ; i < breakbox.size ; ++i) {
+			Rectangle rect = breakbox.get(i);
+			if (player1.holding == "Pickaxe") {
+				if (Gdx.input.isKeyPressed(Input.Keys.SPACE) && player1.prevkey == "UP"
+						&& player1.topbox.overlaps(rect)){
+					breakbox.get(i).y += 100000;
+					if (i == 0)
+						tiledMap.getLayers().get("grassbroken1").setVisible(false);
+					else if (i == 1)
+						tiledMap.getLayers().get("grassbroken2").setVisible(false);
+					else if (i == 2)
+						tiledMap.getLayers().get("grassbroken3").setVisible(false);
+					else if (i == 3)
+						tiledMap.getLayers().get("grassbroken4").setVisible(false);
+					else if (i == 4)
+						tiledMap.getLayers().get("grassbroken5").setVisible(false);
+					else if (i == 5)
+						tiledMap.getLayers().get("grassbroken6").setVisible(false);
+					else if (i == 6)
+						tiledMap.getLayers().get("grassbroken7").setVisible(false);
+					else if (i == 7)
+						tiledMap.getLayers().get("grassbroken8").setVisible(false);
+					
+					player1.holding = "";
+				}
+				else if (Gdx.input.isKeyPressed(Input.Keys.SPACE) && player1.prevkey == "DOWN"
+						&& player1.downbox.overlaps(rect)){
+					breakbox.get(i).y += 100000;
+					if (i == 0)
+						tiledMap.getLayers().get("grassbroken1").setVisible(false);
+					else if (i == 1)
+						tiledMap.getLayers().get("grassbroken2").setVisible(false);
+					else if (i == 2)
+						tiledMap.getLayers().get("grassbroken3").setVisible(false);
+					else if (i == 3)
+						tiledMap.getLayers().get("grassbroken4").setVisible(false);
+					else if (i == 4)
+						tiledMap.getLayers().get("grassbroken5").setVisible(false);
+					else if (i == 5)
+						tiledMap.getLayers().get("grassbroken6").setVisible(false);
+					else if (i == 6)
+						tiledMap.getLayers().get("grassbroken7").setVisible(false);
+					else if (i == 7)
+						tiledMap.getLayers().get("grassbroken8").setVisible(false);
+					
+					player1.holding = "";
+					
+				}
+				else if (Gdx.input.isKeyPressed(Input.Keys.SPACE) && player1.prevkey == "RIGHT"
+						&& player1.rightbox.overlaps(rect)){
+					breakbox.get(i).y += 100000;
+					if (i == 0)
+						tiledMap.getLayers().get("grassbroken1").setVisible(false);
+					else if (i == 1)
+						tiledMap.getLayers().get("grassbroken2").setVisible(false);
+					else if (i == 2)
+						tiledMap.getLayers().get("grassbroken3").setVisible(false);
+					else if (i == 3)
+						tiledMap.getLayers().get("grassbroken4").setVisible(false);
+					else if (i == 4)
+						tiledMap.getLayers().get("grassbroken5").setVisible(false);
+					else if (i == 5)
+						tiledMap.getLayers().get("grassbroken6").setVisible(false);
+					else if (i == 6)
+						tiledMap.getLayers().get("grassbroken7").setVisible(false);
+					else if (i == 7)
+						tiledMap.getLayers().get("grassbroken8").setVisible(false);
+					
+					player1.holding = "";
+					
+				}
+				else if (Gdx.input.isKeyPressed(Input.Keys.SPACE) && player1.prevkey == "LEFT"
+						&& player1.leftbox.overlaps(rect)){
+					breakbox.get(i).y += 100000;
+					if (i == 0)
+						tiledMap.getLayers().get("grassbroken1").setVisible(false);
+					else if (i == 1)
+						tiledMap.getLayers().get("grassbroken2").setVisible(false);
+					else if (i == 2)
+						tiledMap.getLayers().get("grassbroken3").setVisible(false);
+					else if (i == 3)
+						tiledMap.getLayers().get("grassbroken4").setVisible(false);
+					else if (i == 4)
+						tiledMap.getLayers().get("grassbroken5").setVisible(false);
+					else if (i == 5)
+						tiledMap.getLayers().get("grassbroken6").setVisible(false);
+					else if (i == 6)
+						tiledMap.getLayers().get("grassbroken7").setVisible(false);
+					else if (i == 7)
+						tiledMap.getLayers().get("grassbroken8").setVisible(false);
+					
+					player1.holding = "";
+					
+				}
+			}
+		}
+		
+		//player2 destroy
+		for (int i=0 ; i < breakbox.size ; ++i) {
+			Rectangle rect = breakbox.get(i);
+			if (player2.holding == "Pickaxe") {
+				if (Gdx.input.isKeyPressed(Input.Keys.NUMPAD_0) && player2.prevkey == "UP"
+						&& player2.topbox.overlaps(rect)){
+					breakbox.get(i).y += 100000;
+					if (i == 0)
+						tiledMap.getLayers().get("grassbroken1").setVisible(false);
+					else if (i == 1)
+						tiledMap.getLayers().get("grassbroken2").setVisible(false);
+					else if (i == 2)
+						tiledMap.getLayers().get("grassbroken3").setVisible(false);
+					else if (i == 3)
+						tiledMap.getLayers().get("grassbroken4").setVisible(false);
+					else if (i == 4)
+						tiledMap.getLayers().get("grassbroken5").setVisible(false);
+					else if (i == 5)
+						tiledMap.getLayers().get("grassbroken6").setVisible(false);
+					else if (i == 6)
+						tiledMap.getLayers().get("grassbroken7").setVisible(false);
+					else if (i == 7)
+						tiledMap.getLayers().get("grassbroken8").setVisible(false);
+					
+					player2.holding = "";
+				}
+				else if (Gdx.input.isKeyPressed(Input.Keys.NUMPAD_0) && player2.prevkey == "DOWN"
+						&& player2.downbox.overlaps(rect)){
+					breakbox.get(i).y += 100000;
+					if (i == 0)
+						tiledMap.getLayers().get("grassbroken1").setVisible(false);
+					else if (i == 1)
+						tiledMap.getLayers().get("grassbroken2").setVisible(false);
+					else if (i == 2)
+						tiledMap.getLayers().get("grassbroken3").setVisible(false);
+					else if (i == 3)
+						tiledMap.getLayers().get("grassbroken4").setVisible(false);
+					else if (i == 4)
+						tiledMap.getLayers().get("grassbroken5").setVisible(false);
+					else if (i == 5)
+						tiledMap.getLayers().get("grassbroken6").setVisible(false);
+					else if (i == 6)
+						tiledMap.getLayers().get("grassbroken7").setVisible(false);
+					else if (i == 7)
+						tiledMap.getLayers().get("grassbroken8").setVisible(false);
+					
+					player2.holding = "";
+					
+				}
+				else if (Gdx.input.isKeyPressed(Input.Keys.NUMPAD_0) && player2.prevkey == "RIGHT"
+						&& player2.rightbox.overlaps(rect)){
+					breakbox.get(i).y += 100000;
+					if (i == 0)
+						tiledMap.getLayers().get("grassbroken1").setVisible(false);
+					else if (i == 1)
+						tiledMap.getLayers().get("grassbroken2").setVisible(false);
+					else if (i == 2)
+						tiledMap.getLayers().get("grassbroken3").setVisible(false);
+					else if (i == 3)
+						tiledMap.getLayers().get("grassbroken4").setVisible(false);
+					else if (i == 4)
+						tiledMap.getLayers().get("grassbroken5").setVisible(false);
+					else if (i == 5)
+						tiledMap.getLayers().get("grassbroken6").setVisible(false);
+					else if (i == 6)
+						tiledMap.getLayers().get("grassbroken7").setVisible(false);
+					else if (i == 7)
+						tiledMap.getLayers().get("grassbroken8").setVisible(false);
+					
+					player2.holding = "";
+					
+				}
+				else if (Gdx.input.isKeyPressed(Input.Keys.NUMPAD_0) && player2.prevkey == "LEFT"
+						&& player2.leftbox.overlaps(rect)){
+					breakbox.get(i).y += 100000;
+					if (i == 0)
+						tiledMap.getLayers().get("grassbroken1").setVisible(false);
+					else if (i == 1)
+						tiledMap.getLayers().get("grassbroken2").setVisible(false);
+					else if (i == 2)
+						tiledMap.getLayers().get("grassbroken3").setVisible(false);
+					else if (i == 3)
+						tiledMap.getLayers().get("grassbroken4").setVisible(false);
+					else if (i == 4)
+						tiledMap.getLayers().get("grassbroken5").setVisible(false);
+					else if (i == 5)
+						tiledMap.getLayers().get("grassbroken6").setVisible(false);
+					else if (i == 6)
+						tiledMap.getLayers().get("grassbroken7").setVisible(false);
+					else if (i == 7)
+						tiledMap.getLayers().get("grassbroken8").setVisible(false);
+					
+					player2.holding = "";
+					
+				}
+			}
+		}
+		
+	}
+	
 	public void check_unji(float delta) {
 		//Unji
 		if (player1.slow == true) {
@@ -838,10 +1285,11 @@ public class Chapter2 implements Screen{
 		
 		//Player1 Movement//
 		if (true) {
-			if(Gdx.input.isKeyPressed(Input.Keys.W) && player1.checkoverlaps == false && player1.stuck == false){
+			if(Gdx.input.isKeyPressed(Input.Keys.W) && player1.checkoverlaps == false && player1.stuck == false
+					&& player1.canstuck == false){
 	            player1.currentFrame = (TextureRegion) player1.go_up.getKeyFrame(player1.elapsedTime, true);
 	            player1.pos_y += 5+player1.speedup;
-	            if (player1.slow == false && player1.speed == false)
+	            if (player1.slow == false && player1.speed == false && player1.boneslow == false)
 	            	player1.elapsedTime += 2*delta;
 	            player1.stop = 1;
 	            player1.rect.y += 5+player1.speedup;
@@ -852,10 +1300,11 @@ public class Chapter2 implements Screen{
 				player1.leftbox.y += 5+player1.speedup;
 	            player1.prevkey = "UP";
 	        }
-			else if(Gdx.input.isKeyPressed(Input.Keys.S) && player1.checkoverlaps == false && player1.stuck == false) {
+			else if(Gdx.input.isKeyPressed(Input.Keys.S) && player1.checkoverlaps == false && player1.stuck == false
+					&& player1.canstuck == false) {
 				player1.currentFrame = (TextureRegion) player1.go_down.getKeyFrame(player1.elapsedTime, true);
 				player1.pos_y -= 5-player1.speedup;
-				if (player1.slow == false && player1.speed == false)
+				if (player1.slow == false && player1.speed == false && player1.boneslow == false)
 					player1.elapsedTime += 2*delta;
 				player1.stop = 0;
 				player1.rect.y -= 5+player1.speedup;
@@ -866,10 +1315,11 @@ public class Chapter2 implements Screen{
 				player1.leftbox.y -= 5+player1.speedup;
 				player1.prevkey = "DOWN";
 			}
-			else if(Gdx.input.isKeyPressed(Input.Keys.D) && player1.checkoverlaps == false && player1.stuck == false) {
+			else if(Gdx.input.isKeyPressed(Input.Keys.D) && player1.checkoverlaps == false && player1.stuck == false
+					&& player1.canstuck == false) {
 				player1.currentFrame = (TextureRegion) player1.go_right.getKeyFrame(player1.elapsedTime, true);
 				player1.pos_x += 5+player1.speedup;
-				if (player1.slow == false && player1.speed == false)
+				if (player1.slow == false && player1.speed == false && player1.boneslow == false)
 					player1.elapsedTime += 2*delta;
 				player1.stop = 2;
 				player1.rect.x += 5+player1.speedup;
@@ -880,10 +1330,11 @@ public class Chapter2 implements Screen{
 				player1.leftbox.x += 5+player1.speedup;
 				player1.prevkey = "RIGHT";
 			}
-			else if(Gdx.input.isKeyPressed(Input.Keys.A) && player1.checkoverlaps == false && player1.stuck == false) {
+			else if(Gdx.input.isKeyPressed(Input.Keys.A) && player1.checkoverlaps == false && player1.stuck == false
+					&& player1.canstuck == false) {
 				player1.currentFrame = (TextureRegion) player1.go_left.getKeyFrame(player1.elapsedTime, true);
 				player1.pos_x -= 5-player1.speedup;
-				if (player1.slow == false && player1.speed == false)
+				if (player1.slow == false && player1.speed == false && player1.boneslow == false)
 					player1.elapsedTime += 2*delta;
 				player1.stop = 3;
 				player1.rect.x -= 5+player1.speedup;
@@ -958,7 +1409,8 @@ public class Chapter2 implements Screen{
 				
 		//Player2 Movement//
 		if (true) {
-			if(Gdx.input.isKeyPressed(Input.Keys.UP) && player2.checkoverlaps == false && player2.stuck == false) {
+			if(Gdx.input.isKeyPressed(Input.Keys.UP) && player2.checkoverlaps == false && player2.stuck == false
+					&& player2.canstuck == false) {
 				player2.currentFrame = (TextureRegion) player2.go_up.getKeyFrame(player2.elapsedTime, true);
 			    player2.pos_y += 5+player2.speedup;
 			    player2.rect.y += 5+player2.speedup;
@@ -967,12 +1419,13 @@ public class Chapter2 implements Screen{
 				player2.downbox.y += 5+player2.speedup;
 				player2.rightbox.y += 5+player2.speedup;
 				player2.leftbox.y += 5+player2.speedup;
-				if (player2.slow == false && player2.speed == false)
+				if (player2.slow == false && player2.speed == false && player2.boneslow == false)
 					player2.elapsedTime += 2*delta;
 			    player2.stop = 1;
 			    player2.prevkey = "UP";
 			}
-			else if(Gdx.input.isKeyPressed(Input.Keys.DOWN) && player2.checkoverlaps == false && player2.stuck == false) {
+			else if(Gdx.input.isKeyPressed(Input.Keys.DOWN) && player2.checkoverlaps == false && player2.stuck == false
+					&& player2.canstuck == false) {
 				player2.currentFrame = (TextureRegion) player2.go_down.getKeyFrame(player2.elapsedTime, true);
 				player2.pos_y -= 5+player2.speedup;
 				player2.rect.y -= 5+player2.speedup;
@@ -981,12 +1434,13 @@ public class Chapter2 implements Screen{
 				player2.downbox.y -= 5+player2.speedup;
 				player2.rightbox.y -= 5+player2.speedup;
 				player2.leftbox.y -= 5+player2.speedup;
-				if (player2.slow == false && player2.speed == false)
+				if (player2.slow == false && player2.speed == false && player2.boneslow == false)
 					player2.elapsedTime += 2*delta;
 				player2.stop = 0;
 				player2.prevkey = "DOWN";
 			}
-			else if(Gdx.input.isKeyPressed(Input.Keys.RIGHT) && player2.checkoverlaps == false && player2.stuck == false) {
+			else if(Gdx.input.isKeyPressed(Input.Keys.RIGHT) && player2.checkoverlaps == false && player2.stuck == false
+					&& player2.canstuck == false) {
 				player2.currentFrame = (TextureRegion) player2.go_right.getKeyFrame(player2.elapsedTime, true);
 				player2.pos_x += 5+player2.speedup;
 				player2.rect.x += 5+player2.speedup;
@@ -995,12 +1449,13 @@ public class Chapter2 implements Screen{
 				player2.downbox.x += 5+player2.speedup;
 				player2.rightbox.x += 5+player2.speedup;
 				player2.leftbox.x += 5+player2.speedup;
-				if (player2.slow == false && player2.speed == false)
+				if (player2.slow == false && player2.speed == false && player2.boneslow == false)
 					player2.elapsedTime += 2*delta;
 				player2.stop = 2;
 				player2.prevkey = "RIGHT";
 			}
-			else if(Gdx.input.isKeyPressed(Input.Keys.LEFT) && player2.checkoverlaps == false && player2.stuck == false) {
+			else if(Gdx.input.isKeyPressed(Input.Keys.LEFT) && player2.checkoverlaps == false && player2.stuck == false
+					&& player2.canstuck == false) {
 				player2.currentFrame = (TextureRegion) player2.go_left.getKeyFrame(player2.elapsedTime, true);
 				player2.pos_x -= 5+player2.speedup;
 				player2.rect.x -= 5+player2.speedup;
@@ -1009,7 +1464,7 @@ public class Chapter2 implements Screen{
 				player2.downbox.x -= 5+player2.speedup;
 				player2.rightbox.x -= 5+player2.speedup;
 				player2.leftbox.x -= 5+player2.speedup;
-				if (player2.slow == false && player2.speed == false)
+				if (player2.slow == false && player2.speed == false && player2.boneslow == false)
 					player2.elapsedTime += 2*delta;
 				player2.stop = 3;
 				player2.prevkey = "LEFT";
@@ -1154,6 +1609,9 @@ public class Chapter2 implements Screen{
 			handle(delta);
 			check_banana(delta);
 		}
+		check_bone(delta);
+		check_can(delta);
+		check_pickaxe(delta);
 		check_unji(delta);
 		check_breakboxwalk(delta);
 		check_exit(delta);
@@ -1219,14 +1677,70 @@ public class Chapter2 implements Screen{
 		//Pickaxe
 		batch.draw(img_pickaxe, pickaxe.rect.x, pickaxe.rect.y);
 		
-		//victory
-		if (player1.win == true) {
-			batch.draw(hunterwin, (w/2)-600, (h/2)-100, 1200, 400);
+		//Can
+		if (can.pickup == false) {
+			can.currentFrame = (TextureRegion) can.anime.getKeyFrame(0, true);
+			batch.draw(can.currentFrame, can.rect.x, can.rect.y);
+		}
+				
+		//Can is throwed
+		if (can.throwup == true && !(can.rect.overlaps(player1.rect)) && !(can.rect.overlaps(player2.rect))) {
+			can.currentFrame = (TextureRegion) can.anime.getKeyFrame(can.elapsedTime, true);
+			can.elapsedTime += 3*delta;
+			can.rect.y += 4;
+			batch.draw(can.currentFrame, can.rect.x, can.rect.y);
+		}
+		if (can.throwdown == true && !(can.rect.overlaps(player1.rect)) && !(can.rect.overlaps(player2.rect))) {
+			can.currentFrame = (TextureRegion) can.anime.getKeyFrame(can.elapsedTime, true);
+			can.elapsedTime += 3*delta;
+			can.rect.y -= 4;
+			batch.draw(can.currentFrame, can.rect.x, can.rect.y);
+		}
+		if (can.throwright == true && !(can.rect.overlaps(player1.rect)) && !(can.rect.overlaps(player2.rect))) {
+			can.currentFrame = (TextureRegion) can.anime.getKeyFrame(can.elapsedTime, true);
+			can.elapsedTime += 3*delta;
+			can.rect.x += 4;
+			batch.draw(can.currentFrame, can.rect.x, can.rect.y);
+		}
+		if (can.throwleft == true && !(can.rect.overlaps(player1.rect)) && !(can.rect.overlaps(player2.rect))) {
+			can.currentFrame = (TextureRegion) can.anime.getKeyFrame(can.elapsedTime, true);
+			can.elapsedTime += 3*delta;
+			can.rect.x -= 4;
+			batch.draw(can.currentFrame, can.rect.x, can.rect.y);
+		}
+				
+		//Bone
+		if (bone.pickup == false) {
+			bone.currentFrame = (TextureRegion) bone.anime.getKeyFrame(0, true);
+			batch.draw(bone.currentFrame, bone.rect.x, bone.rect.y);
 		}
 		
-		if (player2.win == true) {
-			batch.draw(runnerwin, (w/2)-600, (h/2)-100, 1200, 400);
+		//Bone is throwed
+		if (bone.throwup == true && !(bone.rect.overlaps(player1.rect)) && !(bone.rect.overlaps(player2.rect))) {
+			bone.currentFrame = (TextureRegion) bone.anime.getKeyFrame(bone.elapsedTime, true);
+			bone.elapsedTime += 3*delta;
+			bone.rect.y += 4;
+			batch.draw(bone.currentFrame, bone.rect.x, bone.rect.y);
 		}
+		if (bone.throwdown == true && !(bone.rect.overlaps(player1.rect)) && !(bone.rect.overlaps(player2.rect))) {
+			bone.currentFrame = (TextureRegion) bone.anime.getKeyFrame(bone.elapsedTime, true);
+			bone.elapsedTime += 3*delta;
+			bone.rect.y -= 4;
+			batch.draw(bone.currentFrame, bone.rect.x, bone.rect.y);
+		}
+		if (bone.throwright == true && !(bone.rect.overlaps(player1.rect)) && !(bone.rect.overlaps(player2.rect))) {
+			bone.currentFrame = (TextureRegion) bone.anime.getKeyFrame(bone.elapsedTime, true);
+			bone.elapsedTime += 3*delta;
+			bone.rect.x += 4;
+			batch.draw(bone.currentFrame, bone.rect.x, bone.rect.y);
+		}
+		if (bone.throwleft == true && !(bone.rect.overlaps(player1.rect)) && !(bone.rect.overlaps(player2.rect))) {
+			bone.currentFrame = (TextureRegion) bone.anime.getKeyFrame(bone.elapsedTime, true);
+			bone.elapsedTime += 3*delta;
+			bone.rect.x -= 4;
+			batch.draw(bone.currentFrame, bone.rect.x, bone.rect.y);
+		}
+		
 		
 		//Player
 		batch.draw(player1.currentFrame, player1.body.x, player1.body.y, player1.size_x, player1.size_y);
@@ -1447,6 +1961,17 @@ public class Chapter2 implements Screen{
 		if (player1.rect.overlaps(GO47) || player2.rect.overlaps(GO47)) {
 			tiledMapRenderer.render(GT47);
 		}
+		
+		//victory
+		batch.begin();
+		if (player1.win == true) {
+			batch.draw(hunterwin, (w/2)-600, (h/2)-100, 1200, 400);
+		}
+						
+		if (player2.win == true) {
+			batch.draw(runnerwin, (w/2)-600, (h/2)-100, 1200, 400);
+		}
+		batch.end();
 		//---------------------------------------------------------------------------------//
 		
 		
@@ -1470,6 +1995,8 @@ public class Chapter2 implements Screen{
 		img_unjisack.dispose();
 		img_unji.dispose();
 		img_pickaxe.dispose();
+		can.atlas.dispose();
+		bone.atlas.dispose();
 		
 	}
 

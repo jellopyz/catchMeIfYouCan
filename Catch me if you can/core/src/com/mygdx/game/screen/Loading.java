@@ -24,8 +24,8 @@ public class Loading implements Screen{
 		
 		this.batch = main.batch;
 		
-		atlas = new TextureAtlas(Gdx.files.internal("loading/loading.atlas"));
-		anime = new Animation(1/5f, atlas.findRegion("loading1."),atlas.findRegion("loading2"),
+		atlas = new TextureAtlas(Gdx.files.internal("loading1/loading.atlas"));
+		anime = new Animation(1/5f, atlas.findRegion("loading1"),atlas.findRegion("loading2"),
 				atlas.findRegion("loading3"),atlas.findRegion("loading4"),atlas.findRegion("loading5"));
 //		anime = new Animation(1/5f, atlas.findRegion("loading1"));
 	}

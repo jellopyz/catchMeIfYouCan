@@ -38,7 +38,7 @@ public class MainMenuScreen implements Screen{
         float h = Gdx.graphics.getHeight();
         
         //TiledMap
-        tiledMap = new TmxMapLoader().load("menu/alldesert.tmx");
+        tiledMap = new TmxMapLoader().load("menu/allmenu.tmx");
         tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap);
         //Camera,Viewport
         gamePort = new StretchViewport(Main.V_WIDTH, Main.V_HEIGHT, camera);
@@ -70,7 +70,7 @@ public class MainMenuScreen implements Screen{
         //----------------------------------------//
         //Camera
         camera.update();
-        if (camera.position.x > 1280*2-640) {
+        if (camera.position.x > 1280*6-640) {
         	camera.position.x = 640;
         }
         camera.position.x += 100*delta;

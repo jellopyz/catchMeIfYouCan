@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 
 public class Character {
-	public int pos_x = 0, pos_y = 0, stop = 0, size_x = 40, size_y = 80;
+	public float pos_x = 0, pos_y = 0, stop = 0, size_x = 40, size_y = 80;
 	public Rectangle body;
 	public Rectangle rect;
 	public Rectangle topbox;

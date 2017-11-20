@@ -34,8 +34,8 @@ public class Hud implements Disposable{
 		this.score1 = score1;
 		this.score2 = score2;
 		stop = false;
-		min = 1;
-		sec = 30;
+		min = 0;
+		sec = 60;
 		viewport = new FitViewport(Main.V_WIDTH, Main.V_HEIGHT, new OrthographicCamera());
 		stage = new Stage(viewport, sb);
 		Table table = new Table();

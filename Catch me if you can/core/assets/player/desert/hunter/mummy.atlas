@@ -4,63 +4,63 @@ size: 1024,128
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
-fl
+mbd
   rotate: false
   xy: 2, 2
   size: 40, 80
   orig: 40, 80
   offset: 0, 0
   index: -1
-fr
+mc1
   rotate: false
   xy: 44, 2
   size: 40, 80
   orig: 40, 80
   offset: 0, 0
   index: -1
-mbd
+mc2
   rotate: false
   xy: 86, 2
   size: 40, 80
   orig: 40, 80
   offset: 0, 0
   index: -1
-mc1
+mc3
   rotate: false
   xy: 128, 2
   size: 40, 80
   orig: 40, 80
   offset: 0, 0
   index: -1
-mc2
+md1
   rotate: false
   xy: 170, 2
   size: 40, 80
   orig: 40, 80
   offset: 0, 0
   index: -1
-mc3
+md2
   rotate: false
   xy: 212, 2
   size: 40, 80
   orig: 40, 80
   offset: 0, 0
   index: -1
-md1
+mfd
   rotate: false
   xy: 254, 2
   size: 40, 80
   orig: 40, 80
   offset: 0, 0
   index: -1
-md2
+mfl
   rotate: false
   xy: 296, 2
   size: 40, 80
   orig: 40, 80
   offset: 0, 0
   index: -1
-mfu
+mfr
   rotate: false
   xy: 338, 2
   size: 40, 80

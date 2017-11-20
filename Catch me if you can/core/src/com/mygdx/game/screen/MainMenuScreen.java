@@ -22,15 +22,17 @@ public class MainMenuScreen implements Screen{
 	final Main main;
 	
 	public SpriteBatch batch;
-	public TextureAtlas start, exit, title;
-	public TextureRegion startcurrentFrame, exitcurrentFrame, titlecurrentFrame;
-	public Animation start_anime, exit_anime, title_anime;
+	public TextureAtlas start, exit, title, howtoplay;
+	public TextureRegion startcurrentFrame, exitcurrentFrame, titlecurrentFrame, howtoplaycurrentFrame;
+	public Animation start_anime, exit_anime, title_anime, howtoplay_anime;
 	public float menutime = 0, titletime = 0, delay = 0;
 	public Sound music;
+	public Sound click, point;
 	public OrthographicCamera camera;
 	public Viewport gamePort;
 	public TiledMap tiledMap;
 	public TiledMapRenderer tiledMapRenderer;
+	public int pointcount = 0;
 	
 	public MainMenuScreen(Main main) {
 		this.main = main;
@@ -48,9 +50,12 @@ public class MainMenuScreen implements Screen{
 		batch = main.batch;
 		start = new TextureAtlas(Gdx.files.internal("button/start/start.atlas"));
 		exit = new TextureAtlas(Gdx.files.internal("button/exit/exit.atlas"));
+		howtoplay = new TextureAtlas(Gdx.files.internal("button/howtoplay/howtoplay.atlas"));
 		title = new TextureAtlas(Gdx.files.internal("title/title.atlas"));
 		
 		//Sound
+		click = Gdx.audio.newSound(Gdx.files.internal("sound/effect/click.mp3"));
+		point = Gdx.audio.newSound(Gdx.files.internal("sound/effect/point.mp3"));
 		music = Gdx.audio.newSound(Gdx.files.internal("sound/music/menumusic.mp3"));
 		music.loop();
 		//Animation
@@ -60,6 +65,7 @@ public class MainMenuScreen implements Screen{
 					,title.findRegion("title1"), title.findRegion("title2"),title.findRegion("title3"),title.findRegion("title4")
 					,title.findRegion("title5"),title.findRegion("title6"),title.findRegion("title5"),title.findRegion("title4")
 					,title.findRegion("title3"),title.findRegion("title2"));
+		howtoplay_anime = new Animation(1/2f, howtoplay.getRegions());
 	}
 
 	@Override
@@ -77,40 +83,68 @@ public class MainMenuScreen implements Screen{
         
 			startcurrentFrame = (TextureRegion) start_anime.getKeyFrame(0, true);
 			exitcurrentFrame = (TextureRegion) exit_anime.getKeyFrame(0, true);
+			howtoplaycurrentFrame = (TextureRegion) howtoplay_anime.getKeyFrame(0, true);
 			titlecurrentFrame = (TextureRegion) title_anime.getKeyFrame(titletime, true);
 			
 			titletime += 6*delta;
 			menutime += 10*Gdx.graphics.getDeltaTime();
 			//Move Mouse//
 			if(Gdx.input.getX() >= (1280/2)-100 && Gdx.input.getX() <= (1280/2)+100) {
-				if (Gdx.input.getY() >= (680/2)+90 && Gdx.input.getY() <= (680/2)+65+90) {
+				if (Gdx.input.getY() >= (680/2) && Gdx.input.getY() <= (680/2)+65) {
 					startcurrentFrame = (TextureRegion) start_anime.getKeyFrame(0.5f, true);
+					pointcount++;
+					if (pointcount == 1)
+						point.play();
 				}
-				if (Gdx.input.getY() >= (680/2)+90+100 && Gdx.input.getY() <= (680/2)+65+100+90) {
+				else if (Gdx.input.getY() >= (680/2)+100+100 && Gdx.input.getY() <= (680/2)+65+100+100) {
 					exitcurrentFrame = (TextureRegion) exit_anime.getKeyFrame(0.5f, true);
+					pointcount++;
+					if (pointcount == 1)
+						point.play();
+				}
+				else if (Gdx.input.getY() >= (680/2)+100 && Gdx.input.getY() <= (680/2)+65+100) {
+					howtoplaycurrentFrame = (TextureRegion) howtoplay_anime.getKeyFrame(0.5f, true);
+					pointcount++;
+					if (pointcount == 1)
+						point.play();
 				}
 			}
-			
+			else {
+				pointcount = 0;
+			}
+
 			
 			//Control//
 			if (Gdx.input.isButtonPressed(Input.Buttons.LEFT)){
 		        if(Gdx.input.getX() >= (1280/2)-100 && Gdx.input.getX() <= (1280/2)+100) {
 		        	//Start
-		        	if (Gdx.input.getY() >= (680/2)+90 && Gdx.input.getY() <= (680/2)+65+90) {
+		        	if (Gdx.input.getY() >= (680/2) && Gdx.input.getY() <= (680/2)+65) {
 		        		startcurrentFrame = (TextureRegion) start_anime.getKeyFrame(0.5f, true);
+		        		click.play();
 		        		delay += 0.5;
 		        		if (delay > 2) {
 		        			main.setScreen(new Chapter1(main));
-		        			dispose();
+		        			music.stop();
 		        		}
 		        	}
 		        	//Exit
-		        	if (Gdx.input.getY() >= (680/2)+90+100 && Gdx.input.getY() <= (680/2)+65+90+100) {
+		        	if (Gdx.input.getY() >= (680/2)+100+100 && Gdx.input.getY() <= (680/2)+65+100+100) {
 		        		exitcurrentFrame = (TextureRegion) exit_anime.getKeyFrame(0.5f, true);
+		        		click.play();
 		        		delay += 0.5;
 		        		if (delay > 2) {
 		        			Gdx.app.exit();
 		        			dispose();
+		        		}
+		        	}
+		        	//Howtoplay
+		        	if (Gdx.input.getY() >= (680/2)+100 && Gdx.input.getY() <= (680/2)+65+100) {
+		        		howtoplaycurrentFrame = (TextureRegion) howtoplay_anime.getKeyFrame(0.5f, true);
+		        		click.play();
+		        		delay += 0.5;
+		        		if (delay > 2) {
+		        			main.setScreen(new Howtoplay(main));
+		        			music.stop();
 		        		}
 		        	}
 		        	
@@ -122,9 +156,10 @@ public class MainMenuScreen implements Screen{
 			tiledMapRenderer.render();
 			//Graphics Rendering//
 			batch.begin();
-			batch.draw(titlecurrentFrame, 290, 300, 700, 250);
-			batch.draw(startcurrentFrame, (1280/2)-140, (680/2)-300, 300, 300);
+			batch.draw(titlecurrentFrame, 290, 400, 700, 250);
+			batch.draw(startcurrentFrame, (1280/2)-140, (680/2)-200, 300, 300);
 			batch.draw(exitcurrentFrame, (1280/2)-140, (680/2)-400, 300, 300);
+			batch.draw(howtoplaycurrentFrame, (1280/2)-140, (680/2)-300, 300, 300);
 			batch.end();
 			//---------------------------------------------------------------------------------//
         
@@ -136,6 +171,9 @@ public class MainMenuScreen implements Screen{
 		start.dispose();
 		exit.dispose();
 		music.dispose();
+		click.dispose();
+		point.dispose();
+		howtoplay.dispose();
 		
 	}
 

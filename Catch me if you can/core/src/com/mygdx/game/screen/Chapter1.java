@@ -45,7 +45,7 @@ public class Chapter1 implements Screen{
 	public SpriteBatch batch;
 	//Image
 	public Texture grid, img_shoe, img_banana, img_bananapeel, hunterwin, runnerwin;
-	public Texture img_unjisack, img_unji, img_pickaxe;
+	public Texture img_unjisack, img_unji, img_pickaxe, img_stat1, img_stat2;
 	//Character
 	public Character player1;
 	public Character player2;
@@ -64,7 +64,8 @@ public class Chapter1 implements Screen{
 	public Rectangle escape;
 	public Array<Rectangle> exit = new Array<Rectangle>();
 	//Sound
-	public Sound wallcrash, music;
+	public Sound wallcrash, music, boost, cactuscrash, throwcan, throwbone, hitcan, takeitem, hitbone, broken, slow, stun;
+	public Sound winning, escapesound;
 	//item
 	public Shoes shoes;
 	public Banana banana;
@@ -78,6 +79,7 @@ public class Chapter1 implements Screen{
 	public float w, h;
 	//WinTime
 	public float wintime = 0;
+	public int escapecount = 0;
 	
 	//RectBehind
 	public Rectangle hideb1;
@@ -145,6 +147,8 @@ public class Chapter1 implements Screen{
 		img_unjisack = new Texture(Gdx.files.internal("item/Unji-Sack.png"));
 		img_unji = new Texture(Gdx.files.internal("item/Unji.png"));
 		img_pickaxe = new Texture(Gdx.files.internal("item/Pickaxe.png"));
+		img_stat1 = new Texture(Gdx.files.internal("hud/item.png"));
+		img_stat2 = new Texture(Gdx.files.internal("hud/status.png"));
 		//victory
 		hunterwin = new Texture(Gdx.files.internal("victory/huntwinsnow.png"));
 		runnerwin = new Texture(Gdx.files.internal("victory/runwinsnow.png"));
@@ -156,6 +160,18 @@ public class Chapter1 implements Screen{
 		
 		//Sound
 		wallcrash = Gdx.audio.newSound(Gdx.files.internal("sound/effect/wallcrash.ogg"));
+		cactuscrash = Gdx.audio.newSound(Gdx.files.internal("sound/effect/cactuscrash.ogg"));
+		boost = Gdx.audio.newSound(Gdx.files.internal("sound/effect/boost.mp3"));
+		throwcan = Gdx.audio.newSound(Gdx.files.internal("sound/effect/throwcan.mp3"));
+		throwbone = Gdx.audio.newSound(Gdx.files.internal("sound/effect/throwbone.mp3"));
+		hitcan = Gdx.audio.newSound(Gdx.files.internal("sound/effect/hitcan.mp3"));
+		hitbone = Gdx.audio.newSound(Gdx.files.internal("sound/effect/hitbone.mp3"));
+		takeitem = Gdx.audio.newSound(Gdx.files.internal("sound/effect/takeitem.mp3"));
+		broken = Gdx.audio.newSound(Gdx.files.internal("sound/effect/broken.mp3"));
+		slow = Gdx.audio.newSound(Gdx.files.internal("sound/effect/slow.mp3"));
+		stun = Gdx.audio.newSound(Gdx.files.internal("sound/effect/Stun.mp3"));
+		winning = Gdx.audio.newSound(Gdx.files.internal("sound/effect/winning.mp3"));
+		escapesound = Gdx.audio.newSound(Gdx.files.internal("sound/effect/escapesound.mp3"));
 		music = Gdx.audio.newSound(Gdx.files.internal("sound/music/mapdesert.mp3"));
 		music.loop();
 
@@ -169,12 +185,12 @@ public class Chapter1 implements Screen{
 		player1 = new Character(100, 40);
 		player2 = new Character(1280-100, 500);
 		//item
-		shoes = new Shoes(300, 300);
-		banana = new Banana(500, 500);
-		unji = new Unji(300, 350);
-		pickaxe = new Pickaxe(550, 500);
+		shoes = new Shoes(320, 560);
+		banana = new Banana(890, 590);
+		unji = new Unji(100, 180);
+		pickaxe = new Pickaxe(700, 300);
 		can = new Can(600, 50);
-		bone = new Bone(900, 70);
+		bone = new Bone(1100, 150);
 		
 		
 		//HUD
@@ -688,7 +704,7 @@ public class Chapter1 implements Screen{
 		player1.go_down = new Animation(1/2f, player1.atlas.findRegion("mu1"), player1.atlas.findRegion("mu2"));
 		player1.go_right = new Animation(1/2f, player1.atlas.findRegion("ml1"), player1.atlas.findRegion("ml2"), player1.atlas.findRegion("ml3"), player1.atlas.findRegion("ml4"), player1.atlas.findRegion("ml5"));
 		player1.go_left = new Animation(1/2f, player1.atlas.findRegion("mr1"), player1.atlas.findRegion("mr2"), player1.atlas.findRegion("mr3"), player1.atlas.findRegion("mr4"), player1.atlas.findRegion("mr5"));
-		player1.stand = new Animation(1/2f, player1.atlas.findRegion("mfu"), player1.atlas.findRegion("mbd"), player1.atlas.findRegion("fl"), player1.atlas.findRegion("fr"));
+		player1.stand = new Animation(1/2f, player1.atlas.findRegion("mfd"), player1.atlas.findRegion("mbd"), player1.atlas.findRegion("mfl"), player1.atlas.findRegion("mfr"));
 		player1.confused = new Animation(1/2f, player1.atlas.findRegion("mc1"), player1.atlas.findRegion("mc2"), player1.atlas.findRegion("mc3"));
 		
 		//Player2
@@ -715,6 +731,10 @@ public class Chapter1 implements Screen{
 	}
 	
 	
+	public void show_stat(float delta) {
+		
+	}
+	
 	public void check_bone(float delta) {
 				//Can overlaps and Holding
 				if (player1.rect.overlaps(bone.rect) && bone.slow == false) {
@@ -722,30 +742,36 @@ public class Chapter1 implements Screen{
 					bone.pickup = true;
 					bone.slow = true;
 					bone.rect.x += 100000;
+					takeitem.play();
 				}
 				if (player2.rect.overlaps(bone.rect) && bone.slow == false) {
 					player2.holding = "Bone";
 					bone.pickup = true;
 					bone.slow = true;
 					bone.rect.x += 100000;
+					takeitem.play();
 				}
 				// When touch bone
 				if (player1.rect.overlaps(bone.rect) && bone.slow == true) {
 					bone.rect.x += 100000;
 					player1.boneslow= true;
 					player1.bonedelay = TimeUtils.nanoTime();
+					hitbone.play();
+					slow.play();
 				}
 				if (player2.rect.overlaps(bone.rect) && bone.slow == true) {
 					bone.rect.x += 100000;
 					player2.boneslow = true;
 					player2.bonedelay = TimeUtils.nanoTime();
+					hitbone.play();
+					slow.play();
 				}
 				
 				//Slow
 				if (player1.boneslow == true) {
-					if (TimeUtils.nanoTime()- player1.bonedelay < 3000000000f) {
+					if (TimeUtils.nanoTime()- player1.bonedelay < 2000000000f) {
 						player1.elapsedTime += 0.7*delta;
-						player1.speedup = -3;
+						player1.speedup = -2;
 						player1.boneslow = true;
 					}
 					else {
@@ -755,10 +781,10 @@ public class Chapter1 implements Screen{
 					}
 				}
 				if (player2.boneslow == true) {
-					if (TimeUtils.nanoTime()- player2.bonedelay < 3000000000f) {
+					if (TimeUtils.nanoTime()- player2.bonedelay < 2000000000f) {
 						player2.elapsedTime += 0.7*delta;
 						player2.boneslow = true;
-						player2.speedup = -3;
+						player2.speedup = -2;
 					}
 					else {
 						player2.bonedelay = 0;
@@ -774,24 +800,28 @@ public class Chapter1 implements Screen{
 						bone.rect.y = player1.topbox.y;
 						player1.holding = "";
 						bone.throwup = true;
+						throwbone.play();
 					}
 					else if (Gdx.input.isKeyPressed(Input.Keys.SPACE) && player1.prevkey == "DOWN"){
 						bone.rect.x = player1.downbox.x;
 						bone.rect.y = player1.downbox.y;
 						player1.holding = "";
 						bone.throwdown = true;
+						throwbone.play();
 					}
 					else if (Gdx.input.isKeyPressed(Input.Keys.SPACE) && player1.prevkey == "RIGHT"){
 						bone.rect.x = player1.rightbox.x;
 						bone.rect.y = player1.rightbox.y;
 						player1.holding = "";
 						bone.throwright = true;
+						throwbone.play();
 					}
 					else if (Gdx.input.isKeyPressed(Input.Keys.SPACE) && player1.prevkey == "LEFT"){
 						bone.rect.x = player1.leftbox.x;
 						bone.rect.y = player1.leftbox.y;
 						player1.holding = "";
 						bone.throwleft = true;
+						throwbone.play();
 					}
 				}
 				
@@ -802,24 +832,28 @@ public class Chapter1 implements Screen{
 						bone.rect.y = player2.topbox.y;
 						player2.holding = "";
 						bone.throwup = true;
+						throwbone.play();
 					}
 					else if (Gdx.input.isKeyPressed(Input.Keys.NUMPAD_0) && player2.prevkey == "DOWN"){
 						bone.rect.x = player2.downbox.x;
 						bone.rect.y = player2.downbox.y;
 						player2.holding = "";
 						bone.throwdown = true;
+						throwbone.play();
 					}
 					else if (Gdx.input.isKeyPressed(Input.Keys.NUMPAD_0) && player2.prevkey == "RIGHT"){
 						bone.rect.x = player2.rightbox.x;
 						bone.rect.y = player2.rightbox.y;
 						player2.holding = "";
 						bone.throwright = true;
+						throwbone.play();
 					}
 					else if (Gdx.input.isKeyPressed(Input.Keys.NUMPAD_0) && player2.prevkey == "LEFT"){
 						bone.rect.x = player2.leftbox.x;
 						bone.rect.y = player2.leftbox.y;
 						player2.holding = "";
 						bone.throwleft = true;
+						throwbone.play();
 					}
 				}
 				
@@ -832,30 +866,36 @@ public class Chapter1 implements Screen{
 			can.pickup = true;
 			can.stunt = true;
 			can.rect.x += 100000;
+			takeitem.play();
 		}
 		if (player2.rect.overlaps(can.rect) && can.stunt == false) {
 			player2.holding = "Can";
 			can.pickup = true;
 			can.stunt = true;
 			can.rect.x += 100000;
+			takeitem.play();
 		}
 		// When touch can
 		if (player1.rect.overlaps(can.rect) && can.stunt == true) {
 			can.rect.x += 100000;
 			player1.canstuck = true;
 			player1.candelay = TimeUtils.nanoTime();
+			hitcan.play();
+			stun.play();
 		}
 		if (player2.rect.overlaps(can.rect) && can.stunt == true) {
 			can.rect.x += 100000;
 			player2.canstuck = true;
 			player2.candelay = TimeUtils.nanoTime();
+			hitcan.play();
+			stun.play();
 		}
 		
 		//Stunt
 		if (player1.canstuck == true) {
-			if (TimeUtils.nanoTime()- player1.candelay < 3000000000f) {
+			if (TimeUtils.nanoTime()- player1.candelay < 1500000000f) {
 				player1.currentFrame = (TextureRegion) player1.confused.getKeyFrame(player1.elapsedTime, true);
-				player1.elapsedTime += 2*delta;
+				player1.elapsedTime += 3*delta;
 				player1.canstuck = true;
 			}
 			else {
@@ -864,9 +904,9 @@ public class Chapter1 implements Screen{
 			}
 		}
 		if (player2.canstuck == true) {
-			if (TimeUtils.nanoTime()- player2.candelay < 3000000000f) {
+			if (TimeUtils.nanoTime()- player2.candelay < 1500000000f) {
 				player2.currentFrame = (TextureRegion) player2.confused.getKeyFrame(player2.elapsedTime, true);
-				player2.elapsedTime += 2*delta;
+				player2.elapsedTime += 3*delta;
 				player2.canstuck = true;
 			}
 			else {
@@ -882,24 +922,28 @@ public class Chapter1 implements Screen{
 				can.rect.y = player1.topbox.y;
 				player1.holding = "";
 				can.throwup = true;
+				throwcan.play();
 			}
 			else if (Gdx.input.isKeyPressed(Input.Keys.SPACE) && player1.prevkey == "DOWN"){
 				can.rect.x = player1.downbox.x;
 				can.rect.y = player1.downbox.y;
 				player1.holding = "";
 				can.throwdown = true;
+				throwcan.play();
 			}
 			else if (Gdx.input.isKeyPressed(Input.Keys.SPACE) && player1.prevkey == "RIGHT"){
 				can.rect.x = player1.rightbox.x;
 				can.rect.y = player1.rightbox.y;
 				player1.holding = "";
 				can.throwright = true;
+				throwcan.play();
 			}
 			else if (Gdx.input.isKeyPressed(Input.Keys.SPACE) && player1.prevkey == "LEFT"){
 				can.rect.x = player1.leftbox.x;
 				can.rect.y = player1.leftbox.y;
 				player1.holding = "";
 				can.throwleft = true;
+				throwcan.play();
 			}
 		}
 		
@@ -910,24 +954,28 @@ public class Chapter1 implements Screen{
 				can.rect.y = player2.topbox.y;
 				player2.holding = "";
 				can.throwup = true;
+				throwcan.play();
 			}
 			else if (Gdx.input.isKeyPressed(Input.Keys.NUMPAD_0) && player2.prevkey == "DOWN"){
 				can.rect.x = player2.downbox.x;
 				can.rect.y = player2.downbox.y;
 				player2.holding = "";
 				can.throwdown = true;
+				throwcan.play();
 			}
 			else if (Gdx.input.isKeyPressed(Input.Keys.NUMPAD_0) && player2.prevkey == "RIGHT"){
 				can.rect.x = player2.rightbox.x;
 				can.rect.y = player2.rightbox.y;
 				player2.holding = "";
 				can.throwright = true;
+				throwcan.play();
 			}
 			else if (Gdx.input.isKeyPressed(Input.Keys.NUMPAD_0) && player2.prevkey == "LEFT"){
 				can.rect.x = player2.leftbox.x;
 				can.rect.y = player2.leftbox.y;
 				player2.holding = "";
 				can.throwleft = true;
+				throwcan.play();
 			}
 		}
 		
@@ -939,11 +987,13 @@ public class Chapter1 implements Screen{
 		if (player1.rect.overlaps(pickaxe.rect)) {
 			pickaxe.rect.x += 100000;
 			player1.holding = "Pickaxe";
+			takeitem.play();
 					
 		}
 		if (player2.rect.overlaps(pickaxe.rect)) {
 			pickaxe.rect.x += 100000;
 			player2.holding = "Pickaxe";
+			takeitem.play();
 		}
 		
 		//player1 destroy
@@ -952,6 +1002,7 @@ public class Chapter1 implements Screen{
 			if (player1.holding == "Pickaxe") {
 				if (Gdx.input.isKeyPressed(Input.Keys.SPACE) && player1.prevkey == "UP"
 						&& player1.topbox.overlaps(rect)){
+					broken.play();
 					breakbox.get(i).y += 100000;
 					if (i == 0)
 						tiledMap.getLayers().get("break1").setVisible(false);
@@ -982,6 +1033,7 @@ public class Chapter1 implements Screen{
 				}
 				else if (Gdx.input.isKeyPressed(Input.Keys.SPACE) && player1.prevkey == "DOWN"
 						&& player1.downbox.overlaps(rect)){
+					broken.play();
 					breakbox.get(i).y += 100000;
 					if (i == 0)
 						tiledMap.getLayers().get("break1").setVisible(false);
@@ -1013,6 +1065,7 @@ public class Chapter1 implements Screen{
 				}
 				else if (Gdx.input.isKeyPressed(Input.Keys.SPACE) && player1.prevkey == "RIGHT"
 						&& player1.rightbox.overlaps(rect)){
+					broken.play();
 					breakbox.get(i).y += 100000;
 					if (i == 0)
 						tiledMap.getLayers().get("break1").setVisible(false);
@@ -1044,6 +1097,7 @@ public class Chapter1 implements Screen{
 				}
 				else if (Gdx.input.isKeyPressed(Input.Keys.SPACE) && player1.prevkey == "LEFT"
 						&& player1.leftbox.overlaps(rect)){
+					broken.play();
 					breakbox.get(i).y += 100000;
 					if (i == 0)
 						tiledMap.getLayers().get("break1").setVisible(false);
@@ -1082,6 +1136,7 @@ public class Chapter1 implements Screen{
 			if (player2.holding == "Pickaxe") {
 				if (Gdx.input.isKeyPressed(Input.Keys.NUMPAD_0) && player2.prevkey == "UP"
 						&& player2.topbox.overlaps(rect)){
+					broken.play();
 					breakbox.get(i).y += 100000;
 					if (i == 0)
 						tiledMap.getLayers().get("break1").setVisible(false);
@@ -1112,6 +1167,7 @@ public class Chapter1 implements Screen{
 				}
 				else if (Gdx.input.isKeyPressed(Input.Keys.NUMPAD_0) && player2.prevkey == "DOWN"
 						&& player2.downbox.overlaps(rect)){
+					broken.play();
 					breakbox.get(i).y += 100000;
 					if (i == 0)
 						tiledMap.getLayers().get("break1").setVisible(false);
@@ -1143,6 +1199,7 @@ public class Chapter1 implements Screen{
 				}
 				else if (Gdx.input.isKeyPressed(Input.Keys.NUMPAD_0) && player2.prevkey == "RIGHT"
 						&& player2.rightbox.overlaps(rect)){
+					broken.play();
 					breakbox.get(i).y += 100000;
 					if (i == 0)
 						tiledMap.getLayers().get("break1").setVisible(false);
@@ -1174,6 +1231,7 @@ public class Chapter1 implements Screen{
 				}
 				else if (Gdx.input.isKeyPressed(Input.Keys.NUMPAD_0) && player2.prevkey == "LEFT"
 						&& player2.leftbox.overlaps(rect)){
+					broken.play();
 					breakbox.get(i).y += 100000;
 					if (i == 0)
 						tiledMap.getLayers().get("break1").setVisible(false);
@@ -1211,10 +1269,10 @@ public class Chapter1 implements Screen{
 	public void check_unji(float delta) {
 		//Unji
 		if (player1.slow == true) {
-			if (TimeUtils.nanoTime()- player1.unjidelay < 3000000000f) {
+			if (TimeUtils.nanoTime()- player1.unjidelay < 2000000000f) {
 				player1.elapsedTime += 0.7*delta;
 				player1.slow = true;
-				player1.speedup = -3;
+				player1.speedup = -2;
 			}
 			else {
 				player1.unjidelay = 0;
@@ -1224,10 +1282,10 @@ public class Chapter1 implements Screen{
 		}
 		
 		if (player2.slow == true) {
-			if (TimeUtils.nanoTime()- player2.unjidelay < 3000000000f) {
+			if (TimeUtils.nanoTime()- player2.unjidelay < 2000000000f) {
 				player2.elapsedTime += 0.7*delta;
 				player2.slow = true;
-				player2.speedup = -3;
+				player2.speedup = -2;
 			}
 			else {
 				player2.unjidelay = 0;
@@ -1240,12 +1298,14 @@ public class Chapter1 implements Screen{
 			unji.rect.x += 100000;
 			player1.holding = "Unji";
 			unji.unsack = true;
+			takeitem.play();
 			
 		}
 		if (player2.rect.overlaps(unji.rect) && unji.unsack == false) {
 			unji.rect.x += 100000;
 			player2.holding = "Unji";
 			unji.unsack = true;
+			takeitem.play();
 		}
 		
 		//unji unsack overlaps
@@ -1253,11 +1313,13 @@ public class Chapter1 implements Screen{
 			unji.rect.x += 100000;
 			player1.slow = true;
 			player1.unjidelay = TimeUtils.nanoTime();
+			slow.play();
 		}
 		if (player2.rect.overlaps(unji.rect) && unji.unsack == true) {
 			unji.rect.x += 100000;
 			player2.slow = true;
 			player2.unjidelay = TimeUtils.nanoTime();
+			slow.play();
 		}
 		
 		//unji holding
@@ -1266,21 +1328,25 @@ public class Chapter1 implements Screen{
 				unji.rect.x = player1.topbox.x;
 				unji.rect.y = player1.topbox.y;
 				player1.holding = "";
+				takeitem.play();
 			}
 			else if (Gdx.input.isKeyPressed(Input.Keys.SPACE) && player1.prevkey == "DOWN"){
 				unji.rect.x = player1.downbox.x;
 				unji.rect.y = player1.downbox.y;
 				player1.holding = "";
+				takeitem.play();
 			}
 			else if (Gdx.input.isKeyPressed(Input.Keys.SPACE) && player1.prevkey == "RIGHT"){
 				unji.rect.x = player1.rightbox.x;
 				unji.rect.y = player1.rightbox.y;
 				player1.holding = "";
+				takeitem.play();
 			}
 			else if (Gdx.input.isKeyPressed(Input.Keys.SPACE) && player1.prevkey == "LEFT"){
 				unji.rect.x = player1.leftbox.x;
 				unji.rect.y = player1.leftbox.y;
 				player1.holding = "";
+				takeitem.play();
 			}
 		}
 		
@@ -1289,21 +1355,25 @@ public class Chapter1 implements Screen{
 				unji.rect.x = player2.topbox.x;
 				unji.rect.y = player2.topbox.y;
 				player2.holding = "";
+				takeitem.play();
 			}
 			else if (Gdx.input.isKeyPressed(Input.Keys.NUMPAD_0) && player2.prevkey == "DOWN"){
 				unji.rect.x = player2.downbox.x;
 				unji.rect.y = player2.downbox.y;
 				player2.holding = "";
+				takeitem.play();
 			}
 			else if (Gdx.input.isKeyPressed(Input.Keys.NUMPAD_0) && player2.prevkey == "RIGHT"){
 				unji.rect.x = player2.rightbox.x;
 				unji.rect.y = player2.rightbox.y;
 				player2.holding = "";
+				takeitem.play();
 			}
 			else if (Gdx.input.isKeyPressed(Input.Keys.NUMPAD_0) && player2.prevkey == "LEFT"){
 				unji.rect.x = player2.leftbox.x;
 				unji.rect.y = player2.leftbox.y;
 				player2.holding = "";
+				takeitem.play();
 			}
 		}
 	}
@@ -1368,6 +1438,7 @@ public class Chapter1 implements Screen{
 			if (player1.rect.overlaps(cactus.get(i))) {
 				player1.checkcactus = true;
 				player1.cactusdelay = TimeUtils.nanoTime();
+				cactuscrash.play();
 				break;
 			}
 		}
@@ -1376,6 +1447,7 @@ public class Chapter1 implements Screen{
 			if (player2.rect.overlaps(cactus.get(i))) {
 				player2.checkcactus = true;
 				player2.cactusdelay = TimeUtils.nanoTime();
+				cactuscrash.play();
 				break;
 			}
 		}
@@ -1409,18 +1481,20 @@ public class Chapter1 implements Screen{
 			player1.checkshoe = true;
 			player1.shoedelay = TimeUtils.nanoTime();
 			player1.speed = true;
+			boost.play();
 		}
 		if (player2.rect.overlaps(shoes.rect)) {
 			shoes.rect.x += 10000;
 			player2.checkshoe = true;
 			player2.shoedelay = TimeUtils.nanoTime();
 			player2.speed = true;
+			boost.play();
 		}
 		
 		//Check Effect
 		if (player1.checkshoe == true) {
 			if (TimeUtils.nanoTime()- player1.shoedelay < 3000000000f) {
-				player1.speedup = 3;
+				player1.speedup = 2;
 				player1.elapsedTime += 10*delta;
 			}
 			else {
@@ -1433,7 +1507,7 @@ public class Chapter1 implements Screen{
 		
 		if (player2.checkshoe == true) {
 			if (TimeUtils.nanoTime()- player2.shoedelay < 3000000000f) {
-				player2.speedup = 3;
+				player2.speedup = 2;
 				player2.elapsedTime += 10*delta;
 			}
 			else {
@@ -1449,9 +1523,9 @@ public class Chapter1 implements Screen{
 	public void check_banana(float delta) {
 		//Banana
 		if (player1.stuck == true) {
-			if (TimeUtils.nanoTime()- player1.bananadelay < 3000000000f) {
+			if (TimeUtils.nanoTime()- player1.bananadelay < 1500000000f) {
 				player1.currentFrame = (TextureRegion) player1.confused.getKeyFrame(player1.elapsedTime, true);
-				player1.elapsedTime += 2*delta;
+				player1.elapsedTime += 3*delta;
 				player1.stuck = true;
 			}
 			else {
@@ -1461,9 +1535,9 @@ public class Chapter1 implements Screen{
 		}
 		
 		if (player2.stuck == true) {
-			if (TimeUtils.nanoTime()- player2.bananadelay < 3000000000f) {
+			if (TimeUtils.nanoTime()- player2.bananadelay < 1500000000f) {
 				player2.currentFrame = (TextureRegion) player2.confused.getKeyFrame(player2.elapsedTime, true);
-				player2.elapsedTime += 2*delta;
+				player2.elapsedTime += 3*delta;
 				player2.stuck = true;
 			}
 			else {
@@ -1476,23 +1550,27 @@ public class Chapter1 implements Screen{
 			banana.rect.x += 100000;
 			player1.holding = "Banana";
 			banana.peel = true;
+			takeitem.play();
 			
 		}
 		if (player2.rect.overlaps(banana.rect) && banana.peel == false) {
 			banana.rect.x += 100000;
 			player2.holding = "Banana";
 			banana.peel = true;
+			takeitem.play();
 		}
 		
 		if (player1.rect.overlaps(banana.rect) && banana.peel == true) {
 			banana.rect.x += 100000;
 			player1.stuck = true;
 			player1.bananadelay = TimeUtils.nanoTime();
+			stun.play();
 		}
 		if (player2.rect.overlaps(banana.rect) && banana.peel == true) {
 			banana.rect.x += 100000;
 			player2.stuck = true;
 			player2.bananadelay = TimeUtils.nanoTime();
+			stun.play();
 		}
 		
 		if (player1.holding == "Banana") {
@@ -1500,21 +1578,25 @@ public class Chapter1 implements Screen{
 				banana.rect.x = player1.topbox.x;
 				banana.rect.y = player1.topbox.y;
 				player1.holding = "";
+				takeitem.play();
 			}
 			else if (Gdx.input.isKeyPressed(Input.Keys.SPACE) && player1.prevkey == "DOWN"){
 				banana.rect.x = player1.downbox.x;
 				banana.rect.y = player1.downbox.y;
 				player1.holding = "";
+				takeitem.play();
 			}
 			else if (Gdx.input.isKeyPressed(Input.Keys.SPACE) && player1.prevkey == "RIGHT"){
 				banana.rect.x = player1.rightbox.x;
 				banana.rect.y = player1.rightbox.y;
 				player1.holding = "";
+				takeitem.play();
 			}
 			else if (Gdx.input.isKeyPressed(Input.Keys.SPACE) && player1.prevkey == "LEFT"){
 				banana.rect.x = player1.leftbox.x;
 				banana.rect.y = player1.leftbox.y;
 				player1.holding = "";
+				takeitem.play();
 			}
 		}
 		
@@ -1523,21 +1605,25 @@ public class Chapter1 implements Screen{
 				banana.rect.x = player2.topbox.x;
 				banana.rect.y = player2.topbox.y;
 				player2.holding = "";
+				takeitem.play();
 			}
 			else if (Gdx.input.isKeyPressed(Input.Keys.NUMPAD_0) && player2.prevkey == "DOWN"){
 				banana.rect.x = player2.downbox.x;
 				banana.rect.y = player2.downbox.y;
 				player2.holding = "";
+				takeitem.play();
 			}
 			else if (Gdx.input.isKeyPressed(Input.Keys.NUMPAD_0) && player2.prevkey == "RIGHT"){
 				banana.rect.x = player2.rightbox.x;
 				banana.rect.y = player2.rightbox.y;
 				player2.holding = "";
+				takeitem.play();
 			}
 			else if (Gdx.input.isKeyPressed(Input.Keys.NUMPAD_0) && player2.prevkey == "LEFT"){
 				banana.rect.x = player2.leftbox.x;
 				banana.rect.y = player2.leftbox.y;
 				player2.holding = "";
+				takeitem.play();
 			}
 		}
 	}
@@ -1560,46 +1646,46 @@ public class Chapter1 implements Screen{
 			if(Gdx.input.isKeyPressed(Input.Keys.W) && player1.checkoverlaps == false && player1.stuck == false 
 					&& player1.checkcactus == false && player1.canstuck == false){
 	            player1.currentFrame = (TextureRegion) player1.go_up.getKeyFrame(player1.elapsedTime, true);
-	            player1.pos_y += 5+player1.speedup;
+	            player1.pos_y += 3+player1.speedup;
 	            if (player1.slow == false && player1.speed == false && player1.boneslow == false)
-	            	player1.elapsedTime += 2*delta;
+	            	player1.elapsedTime += 3*delta;
 	            player1.stop = 1;
-	            player1.rect.y += 5+player1.speedup;
-	            player1.body.y += 5+player1.speedup;
-	            player1.topbox.y += 5+player1.speedup;
-				player1.downbox.y += 5+player1.speedup;
-				player1.rightbox.y += 5+player1.speedup;
-				player1.leftbox.y += 5+player1.speedup;
+	            player1.rect.y += 3+player1.speedup;
+	            player1.body.y += 3+player1.speedup;
+	            player1.topbox.y += 3+player1.speedup;
+				player1.downbox.y += 3+player1.speedup;
+				player1.rightbox.y += 3+player1.speedup;
+				player1.leftbox.y += 3+player1.speedup;
 	            player1.prevkey = "UP";
 	        }
 			else if(Gdx.input.isKeyPressed(Input.Keys.S) && player1.checkoverlaps == false && player1.stuck == false 
 					&& player1.checkcactus == false && player1.canstuck == false) {
 				player1.currentFrame = (TextureRegion) player1.go_down.getKeyFrame(player1.elapsedTime, true);
-				player1.pos_y -= 5-player1.speedup;
+				player1.pos_y -= 3+player1.speedup;
 				if (player1.slow == false && player1.speed == false && player1.boneslow == false)
-					player1.elapsedTime += 2*delta;
+					player1.elapsedTime += 3*delta;
 				player1.stop = 0;
-				player1.rect.y -= 5+player1.speedup;
-				player1.body.y -= 5+player1.speedup;
-				player1.topbox.y -= 5+player1.speedup;
-				player1.downbox.y -= 5+player1.speedup;
-				player1.rightbox.y -= 5+player1.speedup;
-				player1.leftbox.y -= 5+player1.speedup;
+				player1.rect.y -= 3+player1.speedup;
+				player1.body.y -= 3+player1.speedup;
+				player1.topbox.y -= 3+player1.speedup;
+				player1.downbox.y -= 3+player1.speedup;
+				player1.rightbox.y -= 3+player1.speedup;
+				player1.leftbox.y -= 3+player1.speedup;
 				player1.prevkey = "DOWN";
 			}
 			else if(Gdx.input.isKeyPressed(Input.Keys.D) && player1.checkoverlaps == false && player1.stuck == false 
 					&& player1.checkcactus == false && player1.canstuck == false) {
 				player1.currentFrame = (TextureRegion) player1.go_right.getKeyFrame(player1.elapsedTime, true);
-				player1.pos_x += 5+player1.speedup;
+				player1.pos_x += 3+player1.speedup;
 				if (player1.slow == false && player1.speed == false && player1.boneslow == false)
-					player1.elapsedTime += 2*delta;
+					player1.elapsedTime += 3*delta;
 				player1.stop = 2;
-				player1.rect.x += 5+player1.speedup;
-				player1.body.x += 5+player1.speedup;
-				player1.topbox.x += 5+player1.speedup;
-				player1.downbox.x += 5+player1.speedup;
-				player1.rightbox.x += 5+player1.speedup;
-				player1.leftbox.x += 5+player1.speedup;
+				player1.rect.x += 3+player1.speedup;
+				player1.body.x += 3+player1.speedup;
+				player1.topbox.x += 3+player1.speedup;
+				player1.downbox.x += 3+player1.speedup;
+				player1.rightbox.x += 3+player1.speedup;
+				player1.leftbox.x += 3+player1.speedup;
 				player1.prevkey = "RIGHT";
 			}
 			else if(Gdx.input.isKeyPressed(Input.Keys.A) && player1.checkoverlaps == false && player1.stuck == false 
@@ -1607,14 +1693,14 @@ public class Chapter1 implements Screen{
 				player1.currentFrame = (TextureRegion) player1.go_left.getKeyFrame(player1.elapsedTime, true);
 				player1.pos_x -= 5-player1.speedup;
 				if (player1.slow == false && player1.speed == false && player1.boneslow == false)
-					player1.elapsedTime += 2*delta;
+					player1.elapsedTime += 3*delta;
 				player1.stop = 3;
-				player1.rect.x -= 5+player1.speedup;
-				player1.body.x -= 5+player1.speedup;
-				player1.topbox.x -= 5+player1.speedup;
-				player1.downbox.x -= 5+player1.speedup;
-				player1.rightbox.x -= 5+player1.speedup;
-				player1.leftbox.x -= 5+player1.speedup;
+				player1.rect.x -= 3+player1.speedup;
+				player1.body.x -= 3+player1.speedup;
+				player1.topbox.x -= 3+player1.speedup;
+				player1.downbox.x -= 3+player1.speedup;
+				player1.rightbox.x -= 3+player1.speedup;
+				player1.leftbox.x -= 3+player1.speedup;
 				player1.prevkey = "LEFT";
 			}
 			else if (player1.checkoverlaps == true && player1.prevkey == "UP" && player1.checkcactus == false) {
@@ -1802,60 +1888,60 @@ public class Chapter1 implements Screen{
 			if(Gdx.input.isKeyPressed(Input.Keys.UP) && player2.checkoverlaps == false && player2.stuck == false 
 					&& player2.checkcactus == false && player2.canstuck == false) {
 				player2.currentFrame = (TextureRegion) player2.go_up.getKeyFrame(player2.elapsedTime, true);
-			    player2.pos_y += 5+player2.speedup;
-			    player2.body.y += 5+player2.speedup;
-			    player2.rect.y += 5+player2.speedup;
-			    player2.topbox.y += 5+player2.speedup;
-				player2.downbox.y += 5+player2.speedup;
-				player2.rightbox.y += 5+player2.speedup;
-				player2.leftbox.y += 5+player2.speedup;
+			    player2.pos_y += 3+player2.speedup;
+			    player2.body.y += 3+player2.speedup;
+			    player2.rect.y += 3+player2.speedup;
+			    player2.topbox.y += 3+player2.speedup;
+				player2.downbox.y += 3+player2.speedup;
+				player2.rightbox.y += 3+player2.speedup;
+				player2.leftbox.y += 3+player2.speedup;
 				if (player2.slow == false && player2.speed == false && player2.boneslow == false)
-					player2.elapsedTime += 2*delta;
+					player2.elapsedTime += 3*delta;
 			    player2.stop = 1;
 			    player2.prevkey = "UP";
 			}
 			else if(Gdx.input.isKeyPressed(Input.Keys.DOWN) && player2.checkoverlaps == false && player2.stuck == false 
 					&& player2.checkcactus == false && player2.canstuck == false) {
 				player2.currentFrame = (TextureRegion) player2.go_down.getKeyFrame(player2.elapsedTime, true);
-				player2.pos_y -= 5+player2.speedup;
-				player2.rect.y -= 5+player2.speedup;
-				player2.body.y -= 5+player2.speedup;
-				player2.topbox.y -= 5+player2.speedup;
-				player2.downbox.y -= 5+player2.speedup;
-				player2.rightbox.y -= 5+player2.speedup;
-				player2.leftbox.y -= 5+player2.speedup;
+				player2.pos_y -= 3+player2.speedup;
+				player2.rect.y -= 3+player2.speedup;
+				player2.body.y -= 3+player2.speedup;
+				player2.topbox.y -= 3+player2.speedup;
+				player2.downbox.y -= 3+player2.speedup;
+				player2.rightbox.y -= 3+player2.speedup;
+				player2.leftbox.y -= 3+player2.speedup;
 				if (player2.slow == false && player2.speed == false && player2.boneslow == false)
-					player2.elapsedTime += 2*delta;
+					player2.elapsedTime += 3*delta;
 				player2.stop = 0;
 				player2.prevkey = "DOWN";
 			}
 			else if(Gdx.input.isKeyPressed(Input.Keys.RIGHT) && player2.checkoverlaps == false && player2.stuck == false 
 					&& player2.checkcactus == false && player2.canstuck == false) {
 				player2.currentFrame = (TextureRegion) player2.go_right.getKeyFrame(player2.elapsedTime, true);
-				player2.pos_x += 5+player2.speedup;
-				player2.rect.x += 5+player2.speedup;
-				player2.body.x += 5+player2.speedup;
-				player2.topbox.x += 5+player2.speedup;
-				player2.downbox.x += 5+player2.speedup;
-				player2.rightbox.x += 5+player2.speedup;
-				player2.leftbox.x += 5+player2.speedup;
+				player2.pos_x += 3+player2.speedup;
+				player2.rect.x += 3+player2.speedup;
+				player2.body.x += 3+player2.speedup;
+				player2.topbox.x += 3+player2.speedup;
+				player2.downbox.x += 3+player2.speedup;
+				player2.rightbox.x += 3+player2.speedup;
+				player2.leftbox.x += 3+player2.speedup;
 				if (player2.slow == false && player2.speed == false && player2.boneslow == false)
-					player2.elapsedTime += 2*delta;
+					player2.elapsedTime += 3*delta;
 				player2.stop = 2;
 				player2.prevkey = "RIGHT";
 			}
 			else if(Gdx.input.isKeyPressed(Input.Keys.LEFT) && player2.checkoverlaps == false && player2.stuck == false 
 					&& player2.checkcactus == false && player2.canstuck == false) {
 				player2.currentFrame = (TextureRegion) player2.go_left.getKeyFrame(player2.elapsedTime, true);
-				player2.pos_x -= 5+player2.speedup;
-				player2.rect.x -= 5+player2.speedup;
-				player2.body.x -= 5+player2.speedup;
-				player2.topbox.x -= 5+player2.speedup;
-				player2.downbox.x -= 5+player2.speedup;
-				player2.rightbox.x -= 5+player2.speedup;
-				player2.leftbox.x -= 5+player2.speedup;
+				player2.pos_x -= 3+player2.speedup;
+				player2.rect.x -= 3+player2.speedup;
+				player2.body.x -= 3+player2.speedup;
+				player2.topbox.x -= 3+player2.speedup;
+				player2.downbox.x -= 3+player2.speedup;
+				player2.rightbox.x -= 3+player2.speedup;
+				player2.leftbox.x -= 3+player2.speedup;
 				if (player2.slow == false && player2.speed == false && player2.boneslow == false)
-					player2.elapsedTime += 2*delta;
+					player2.elapsedTime += 3*delta;
 				player2.stop = 3;
 				player2.prevkey = "LEFT";
 			}
@@ -2039,10 +2125,13 @@ public class Chapter1 implements Screen{
 			hud.score1Label.setText(String.format("%02d", hud.score1));
 			player1.win = true;
 			wintime = 0;
+			winning.play();
 		}
 
 		else if (hud.sec == 0 && hud.min == 0 && player2.win == false) {
-			
+			if (escapecount == 0)
+				escapesound.play();
+			escapecount++;
 			if (escape == exit.get(0) && player2.win == false) {
 				System.out.println(0);
 				tiledMap.getLayers().get("exit1").setVisible(false);
@@ -2050,6 +2139,7 @@ public class Chapter1 implements Screen{
 					player2.score++;
 					player2.win = true;
 					wintime = 0;
+					winning.play();
 				}
 			}
 			else if (escape == exit.get(1) && player2.win == false) {
@@ -2059,6 +2149,7 @@ public class Chapter1 implements Screen{
 					player2.score++;
 					player2.win = true;
 					wintime = 0;
+					winning.play();
 				}
 			}
 			else if (escape == exit.get(2) && player2.win == false) {
@@ -2068,6 +2159,7 @@ public class Chapter1 implements Screen{
 					player2.score++;
 					player2.win = true;
 					wintime = 0;
+					winning.play();
 				}
 			}
 			else if (escape == exit.get(3) && player2.win == false) {
@@ -2077,10 +2169,11 @@ public class Chapter1 implements Screen{
 					player2.score++;
 					player2.win = true;
 					wintime = 0;
+					winning.play();
 				}
 			}
 		}
-		if (wintime >= 5 && (player1.win == true || player2.win == true)) {
+		if (wintime >= 3 && (player1.win == true || player2.win == true)) {
 			if (player1.win == true) {
 				music.stop();
 				main.setScreen(new Chapter2(main, player1.score, player2.score));
@@ -2474,6 +2567,48 @@ public class Chapter1 implements Screen{
 			tiledMapRenderer.render(boxint46);
 		}
 		
+		//Statusbar
+		batch.begin();
+		batch.draw(img_stat1, 320, 630);
+		batch.draw(img_stat2, 360, 630);
+		batch.draw(img_stat1, 1150, 630);
+		batch.draw(img_stat2, 1190, 630);
+		//item
+		if (player1.holding == "Banana")
+			batch.draw(img_banana, 327, 637, 25, 25);
+		if (player1.holding == "Can")
+			batch.draw(can.atlas.findRegion("1"), 327, 637, 25, 25);
+		if (player1.holding == "Bone")
+			batch.draw(bone.atlas.findRegion("1"), 327, 637, 25, 25);
+		if (player1.holding == "Unji")
+			batch.draw(img_unjisack, 327, 637, 25, 25);
+		if (player1.holding == "Pickaxe")
+			batch.draw(img_pickaxe, 327, 637, 25, 25);
+		if (player2.holding == "Banana")
+			batch.draw(img_banana, 1157, 637, 25, 25);
+		if (player2.holding == "Can")
+			batch.draw(can.atlas.findRegion("1"), 1157, 637, 25, 25);
+		if (player2.holding == "Bone")
+			batch.draw(bone.atlas.findRegion("1"), 1157, 637, 25, 25);
+		if (player2.holding == "Unji")
+			batch.draw(img_unjisack, 1157, 637, 25, 25);
+		if (player2.holding == "Pickaxe")
+			batch.draw(img_pickaxe, 1157, 637, 25, 25);
+		//effect
+		if (player1.slow == true)
+			batch.draw(img_unji, 367, 637, 25, 25);
+		if (player1.speedup > 0)
+			batch.draw(img_shoe, 367, 637, 25, 25);
+		if (player1.stuck == true)
+			batch.draw(img_bananapeel, 367, 637, 25, 25);
+		if (player2.slow == true)
+			batch.draw(img_unji, 1197, 637, 25, 25);
+		if (player2.speedup > 0)
+			batch.draw(img_shoe, 1197, 637, 25, 25);
+		if (player2.stuck == true)
+			batch.draw(img_bananapeel, 1197, 637, 25, 25);
+		batch.end();
+		
 		//victory
 		batch.begin();
 		if (player1.win == true) {
@@ -2510,6 +2645,20 @@ public class Chapter1 implements Screen{
 		img_pickaxe.dispose();
 		can.atlas.dispose();
 		bone.atlas.dispose();
+		boost.dispose();
+		cactuscrash.dispose();
+		throwcan.dispose();
+		throwbone.dispose();
+		hitcan.dispose();
+		hitbone.dispose();
+		takeitem.dispose();
+		broken.dispose();
+		slow.dispose();
+		stun.dispose();
+		img_stat1.dispose();
+		img_stat2.dispose();
+		winning.dispose();
+		escapesound.dispose();
 		
 	}
 

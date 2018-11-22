@@ -1,5 +1,5 @@
 
-#### Java Game
+# Java Game
 __________________________________
 ### Name: Catch me if you can
 

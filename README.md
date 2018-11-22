@@ -1,4 +1,4 @@
-
+<img src="https://github.com/nailtail/javagame/blob/master/main_menu.JPG"/>
 # Java Game
 
 ### Game's name: Catch me if you can

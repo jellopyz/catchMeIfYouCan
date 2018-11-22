@@ -1,4 +1,5 @@
 <img src="https://github.com/nailtail/javagame/blob/master/main_menu.JPG"/>
+<img src="https://github.com/nailtail/javagame/blob/master/ingame.JPG"/>
 
 # Java Game
 
